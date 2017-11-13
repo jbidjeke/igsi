@@ -1,0 +1,402 @@
+<?php if ($this->access('pilote.manage')) : ?>
+
+<div class="alert alert-danger" role="alert">
+        Il y a <?= $this->igEnAttente->count() ?> demande(s) en attente.
+    </div>
+
+<?php endif; ?>
+<!-- 	<div class="subcontent"  id="loaddiv" > -->
+	<table>
+   		<tr>
+   			<td>
+   			<input type='checkbox' name='delai_javascript' id='delai_javascript' onclick="afficherModule(this,'afficher_filtre')"> <span style="color:#999999;font-style:italic">Filtre</span>
+   			</td>
+   		</tr>
+   	</table>
+	
+	<!-- ********* FILTRE CACHBE ********* -->
+	<!-- <div id="myFilter" style="display: none;"> -->
+	<span class="afficher_filtre" id="afficher_filtre" style="display:none;">
+		<form class='upload' name='filter' id='filter' method='POST' action=''>
+			<input type='hidden' name='flag_recherche' id='flag_recherche'>
+			<input type='hidden' name='path' id='path' value="<?php echo $this->baseUrl();?>">
+			<table style="width:100%">        
+				<tr>
+					<td style="font-size: 12px;color:grey;align:right;">N°Ticket</td><td><input type='text' name='id_ticket'  id='id_ticket' maxlength='12' value="<?php  echo $this->idTicket;?>" size='6'></td>
+					<td style="font-size: 12px;color:grey;align:right">Categorie Ticket</td>
+					<td>
+						<select name="categorie" id="categorie">
+							<option VALUE=""></option>
+							<option VALUE="PLatinium" <?php if ($this->idCategorie == "PLatinium") echo "selected = 'selected'";?>>PLatinium</option>
+							<option VALUE="Or" <?php if ($this->idCategorie == "Or") echo "selected = 'selected'";?>>Or</option>
+							<option VALUE="Argent" <?php if ($this->idCategorie == "Argent") echo "selected = 'selected'";?>>Argent</option>
+							<option VALUE="Bronze" <?php if ($this->idCategorie == "Bronze") echo "selected = 'selected'";?>>Bronze</option>
+						</select>
+					</td>
+					<td style="font-size: 12px;color:grey;align:right">Application</td><td><input type="text" value="<?php  echo $this->apli;?>" id="apli" name="apli"></td>
+				</tr>
+				<tr>
+					<td style="font-size: 12px;color:grey;align:right">Début de l'incident</td><td><input style="width:80px;height:15px;" type="text" name="debut_incident" id="debut_incident" value="" /></td>
+					<td style="font-size: 12px;color:grey;align:right">Date d'évolution d'IG</td><td><input style="width:80px;height:15px;" type="text" name="proc_evo" id="proc_evo" value="" /></td>
+					<td style="color:grey;align:right">Pilote</td><td><input type='text' name='pilote' id='pilote' maxlength='10' value='<?php  echo $this->pilote;?>' size='15'></td>
+				</tr>
+				<tr>
+					<td style="font-size: 12px;color:grey;align:right;">IG départ</td>
+					<td>
+						<select id="ig_depart" name="ig_depart">
+							<?php
+							echo '<option label="-- Choisir --" value="0">-- Choisir --</option>';
+							for ($i = 2; $i <= 5; $i++)
+							{
+								for ($j = 0; $j <= 9; $j++)
+								{
+									if (($i == 5) && ($j == 1))
+										break;		
+									if ($this->ig_depart == $i.'.'.$j)
+										echo '<option label="'.$i.'.'.$j.'" value="'.$i.'.'.$j.'" selected="selected">'.$i.'.'.$j.'</option>';
+									else			
+										echo '<option label="'.$i.'.'.$j.'" value="'.$i.'.'.$j.'">'.$i.'.'.$j.'</option>';
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td style="font-size: 12px;color:grey;align:right">IG en cours</td>
+					<td>
+						<select id="ig_encours" name="ig_encours">
+							<?php
+							echo '<option label="-- Choisir --" value="0">-- Choisir --</option>';
+							for ($i = 2; $i <= 5; $i++)
+							{
+								for ($j = 0; $j <= 9; $j++)
+								{
+									if (($i == 5) && ($j == 1))
+										break;
+									if ($this->ig_encours == $i.'.'.$j)
+										echo '<option label="'.$i.'.'.$j.'" value="'.$i.'.'.$j.'" selected="selected">'.$i.'.'.$j.'</option>';
+									else			
+										echo '<option label="'.$i.'.'.$j.'" value="'.$i.'.'.$j.'">'.$i.'.'.$j.'</option>';
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td style="font-size: 12px;color:grey;align:right">Prochain IG</td>
+					<td>
+						<select id="ig_proc" name="ig_proc">
+							<?php
+							echo '<option label="-- Choisir --" value="0">-- Choisir --</option>';
+							for ($i = 2; $i <= 5; $i++)
+							{
+								for ($j = 0; $j <= 9; $j++)
+								{
+									if (($i == 5) && ($j == 1))
+										break;
+									if ($this->ig_proc == $i.'.'.$j)
+										echo '<option label="'.$i.'.'.$j.'" value="'.$i.'.'.$j.'" selected="selected">'.$i.'.'.$j.'</option>';
+									else			
+										echo '<option label="'.$i.'.'.$j.'" value="'.$i.'.'.$j.'">'.$i.'.'.$j.'</option>';
+								}
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+	        </table><br>
+	        <div style="text-align:center">
+	        	<button class="bouton" type="submit" name="a">Recherche</button>
+				<button class="bouton" TYPE="reset" NAME="nom" VALUE="Reset">Reset</button>	
+			</div><br><br>
+		</form>	
+	</span>
+	<!-- ********* FIN FILTRE CACHBE ********* -->	
+
+	<!--<form name="modifier" action="" method="post">-->
+	<?php 
+		$igDashboard = $this->igDashboard; 
+                $calculDate = $this->calculDate;
+		if(sizeof($this->paginator) == 0)
+		{
+		?>
+			<br><br>
+				<table border='1' width='70%' bordercolor='#66CD00' cellpadding='1' cellspacing='0'>
+					<tr>
+						<td colspan='4' width='auto'><b>PAS D'IG EN COURS</b></td>
+					</tr>
+				</table>
+			<br><br><br>
+			
+		<?php
+			
+		}
+		else
+		{
+			echo "<div class='table-responsive '>
+                            <table class='recap table' border='1' width='100%' bordercolor='gray' cellpadding='0' cellspacing='0' style='font-size:12px;'>
+				<tr style='background-color:#8d0000;'>
+				<th><b style='color:white;'>#</b></th>";
+				if ($this->tri == "idTicket")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/idTicket_desc'>";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/idTicket'>";}
+				echo "<b style='color:white'>N°Ticket</b>";
+				if ($this->tri == 'idTicket')
+					{echo "<img  width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Trier vers le bas' title='Trier'/>";}
+				if ($this->tri == 'idTicket_desc')
+					{echo "<img width='15px'  src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Trier vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+
+				
+				if ($this->tri == "idCategorie")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/idCategorie_desc'>";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/idCategorie'>";}
+				echo "<b style='color:white'>Catégorie Application</b>";
+				if ($this->tri == 'idCategorie')
+					{echo "<img  width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Trier vers le bas' title='Trier'/>";}
+				if ($this->tri == 'idCategorie_desc')
+					{echo "<img ' width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Trier vers le haut' title='Trier'/>";}
+				echo "</a></th>";				
+				/*
+				if ($this->tri == "idSi")
+					{echo "<th><a style='color:white' href='".$this->url(array('action' => 'murimage','tri'=>'idSi_desc'))."'>";}
+				else
+					{echo "<th><a style='color:white' href='".$this->url(array('action' => 'murimage','tri'=>'idSi'))."'>";}
+				echo "<b style='color:white'>SI</b>";
+				if ($this->tri == 'idSi')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'idSi_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				*/
+				if ($this->tri == "apli")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/apli_desc'>";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/apli' >";}
+				echo "<b style='color:white'>Application</b>";
+				if ($this->tri == 'apli')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'apli_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				
+				if ($this->tri == "desc_incident")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/desc_incident_desc' >";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/desc_incident'>";}
+				echo "<b style='color:white'>Description incident</b>";
+				if ($this->tri == 'desc_incident')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'desc_incident_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				
+				if ($this->tri == "debut_incident")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/debut_incident_desc'>";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/debut_incident' >";}
+				echo "<b style='color:white'>Début de l'incident</b>";
+				if ($this->tri == 'debut_incident')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'debut_incident_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				
+				if ($this->tri == "ig_depart")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/ig_depart_desc'>";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/ig_depart' >";}
+				echo "<b style='color:white'>IG de départ</b>";
+				if ($this->tri == 'ig_depart')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'ig_depart_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				
+				if ($this->tri == "ig_encours")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/ig_encours_desc' >";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/ig_encours' >";}
+				echo "<b style='color:white'>IG en cours</b>";
+				if ($this->tri == 'ig_encours')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'ig_encours_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				
+				
+				
+				if ($this->tri == "impact")
+					{echo "<th><a style='color:white' href='".$this->url('dashboard', ['action' => 'murimage','tri'=>'impact_desc'])."'>";}
+				else
+					{echo "<th><a style='color:white' href='".$this->url('dashboard', ['action' => 'murimage','tri'=>'impact'])."'>";}
+				echo "<b style='color:white'>Durée impact</b>";
+				if ($this->tri == 'impact')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'impact_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";								
+				
+				if ($this->tri == "proc_evo")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/proc_evo_desc' >";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/proc_evo' >";}
+				echo "<b style='color:white'>Prochaine évolution d'IG</b>";
+				if ($this->tri == 'proc_evo')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'proc_evo_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				
+				if ($this->tri == "ig_proc")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/ig_proc_desc' >";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/ig_proc' >";}
+				echo "<b style='color:white'>Prochain IG</b>";
+				if ($this->tri == 'ig_proc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'ig_proc_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				
+				if ($this->tri == "pilote")
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/pilote_desc' >";}
+				else
+					{echo "<th><a style='color:white' href='".$this->baseUrl()."/dashboard/murimage/pilote'>";}
+				echo "<b style='color:white'>Pilote incident</b>";
+				if ($this->tri == 'pilote')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_bas.png"."' alt='Flèche vers le bas' title='Trier'/>";}
+				if ($this->tri == 'pilote_desc')
+					{echo "<img width='15px' src='".$this->baseUrl()."/images/fleche_haut.png"."' alt='Flèche vers le haut' title='Trier'/>";}
+				echo "</a></th>";
+				echo "<th><b style='color:white'>Objectif DEXSI</b></th>";	
+				echo "<th><b style='color:white'>Temps avant GTR</b></th>";						
+				echo "
+			</tr>";
+			$counter = 1;
+			foreach($this->paginator as $dashboard)
+			{
+				$diffTemps = $calculDate->makeDate_diff($dashboard['date_prochaine_incident'], date('Y-m-d H:i:s'));
+				$diffTempsDuree = $calculDate->makeDate_diff($dashboard['debut_incident'],date('Y-m-d H:i:s'));
+				$duree_incident = $calculDate->date_diff3($diffTempsDuree);
+				$obj_dexsi = $calculDate->calculDateObjectif($dashboard['debut_incident'],$dashboard['categorie_service']);
+				
+				//$popup = new Application_Model_DbTable_Message();
+				$popup = $this->message;
+				$popu = $popup->findMessage($dashboard['IG_debut'],$dashboard['IG_encours'],$dashboard['categorie_service'],$dashboard['id_ticket']);
+				
+				if ($diffTemps >= 0 && $diffTemps < 15)
+					echo "<tr bgcolor='orange'>";
+				else if(sizeof($popu)>0)
+					echo "<tr bgcolor='red'>";
+				else if ($dashboard['gele']=='OUI')
+					echo "<tr bgcolor='#A2B5CD'>";
+				else
+					echo "<tr bgcolor='white'>";
+				echo "<td>";
+				
+				if(sizeof($popu) > 0)
+				{
+					foreach($popu as $pop)
+					{
+						if($this->profil !="guest")
+							echo "<a href='javascript:openMessage(\"".$pop->IG."\",\"".$dashboard['categorie_service']."\",\"".$dashboard['id_ticket']."\")'>$counter</a><br>";
+						else
+							echo "$counter<br>";
+					}
+				}
+				else 
+					echo $counter;
+					
+				echo "</td>";
+				
+				if ($dashboard['msg_pronet']=='OUI') 
+					echo "<td bgcolor='#FFD700'>";
+				else 
+					echo "<td>";
+				
+				if($this->profil != "guest")
+					echo "<a href=\"".$this->url('calcul',['action'=>'cloturer'])."?id_ticket=".$dashboard['id_ticket']."\">".$dashboard['id_ticket']."</a></td>";
+				else
+					echo "".$dashboard['id_ticket']."</td>";		
+			
+				echo "<td>".$dashboard['categorie_service']."</td>";
+				echo "<td>".$dashboard['typo_service']."</td>";
+												
+				if ($dashboard['commentaire'] != "" && $dashboard['commentaire'] != null)
+				    echo "<td>".str_replace('\\','',utf8_decode($dashboard['commentaire']))."</td>";
+				else
+					echo "<td>-</td>";
+				
+				echo "<td>".$dashboard['debut_incident']."</td>
+					  <td>".$dashboard['IG_debut']."</td>";
+				
+				if($dashboard['TypeIG'] != '')
+					echo "<td>".$dashboard['IG_encours']." (".$dashboard['TypeIG'].")</td>";
+				else
+					echo "<td>".$dashboard['IG_encours']."</td>";
+					
+				echo "<td>".$duree_incident."</td>";
+				if($dashboard['cloture'] == 'OUI'){
+					$diffTemps_GTR = $calculDate->makeDate_diff($obj_dexsi,$dashboard['date_prochaine_incident']);
+					$GTR = $calculDate->date_diff3($diffTemps_GTR);
+					echo "<td bgcolor='#A2B5CD'>".$dashboard['date_prochaine_incident']."</td>";
+				}
+				else
+				{
+					$diffTemps_GTR = $calculDate->makeDate_diff($obj_dexsi,date('Y-m-d H:i:s'));
+					$GTR = $calculDate->date_diff3($diffTemps_GTR);
+					if ($dashboard['gele']=='OUI')
+						echo "<td bgcolor='#A2B5CD'>Gelé</td>";
+					else 
+						echo "<td>".$dashboard['date_prochaine_incident']."</td>";
+				}
+				if ($dashboard['gele']=='OUI')
+					echo "<td bgcolor='#A2B5CD'>Gelé</td>";
+				else 
+					echo "<td>".$dashboard['IG_prochaine']."</td>";
+				if ($this->profil != "guest")
+					echo "<td><a href=\"javascript:changeNomPilote('".$dashboard['id_ticket']."','".$dashboard['nom_admin']."')\">".$dashboard['nom_admin']."</a></td>";
+				else
+					echo "<td>".$dashboard['nom_admin']."</a></td>";
+					
+				if($diffTemps_GTR<0)
+				{
+					$couleur_td = "bgcolor='#A75CA6'";
+					$GTR = "(-)".$GTR;
+				}
+				else
+				{
+					if(($diffTemps_GTR<=30)AND($diffTemps_GTR>=0))
+					{
+						$couleur_td = " bgcolor='#EE7600'";
+					}
+					else
+					{
+						$couleur_td = " bgcolor='#008000'";
+					}
+				}
+				echo "<td $couleur_td>".$obj_dexsi."</td>";
+				echo "<td $couleur_td>".$GTR."</td>";
+				echo "</tr>";
+					
+				$counter++;
+			}
+		}
+		echo "</table></div>";
+		
+		 
+		
+        echo '<table class="numero_page" border="0"><tr><td>';
+        echo $this->paginationControl($this->paginator, 'Sliding', 'partial/paginator/murimage');
+        echo '</td></tr></table>';
+			
+		echo "<table>
+				<tr style='text-align:left'><td style='border:1px solid #000000; background-color:red;'></td><td>IG en cours avec action à réaliser par le pilote</td></tr>
+				<tr style='text-align:left'><td style='border:1px solid #000000; background-color:orange;'></td><td>IG en cours avec action à réaliser par le pilote dans moins de 15 minutes</td></tr>
+				<tr style='text-align:left'><td style='border:1px solid #000000; background-color:#A2B5CD;'></td><td>IG gelé</td></tr>
+				<tr style='text-align:left'><td style='border:1px solid #000000; background-color:white;'></td><td>IG en cours sans action à réaliser par le pilote</td></tr>
+			</table>";
+	?>
+	<!-- </form>
+	</div>  -->

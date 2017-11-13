@@ -1,0 +1,40 @@
+<?php
+$this->headTitle('Add Permission');
+
+/*$this->mainMenu()->setActiveItemId('permissions');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Permissions'=>$this->url('permissions'),
+            'Add Permission'=>$this->url('permissions', ['action'=>'add'])
+            ]);
+*/
+$form->get('name')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Enter name'
+    ]);
+
+$form->get('description')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Enter description'
+    ]);
+
+$form->get('submit')->setAttributes(['class'=>'btn btn-primary']);
+
+$form->prepare();
+?>
+
+<p>
+    Remplissez le formulaire ci-dessous.
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" onsubmit="return verifRoleOrPermission(this)" name="permission-form" id="permission-form">       
+            <?php $this->formDecorator($this, ['name', 'description', 'csrf'], 'submit'); ?>  
+        </form>
+    </div>    
+</div>   
+
+
+

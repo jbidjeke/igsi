@@ -1,0 +1,38 @@
+<?php
+$this->headTitle('Edit Permission');
+
+/*$this->mainMenu()->setActiveItemId('permissions');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Permissions'=>$this->url('permissions'),
+            'Edit Permission'=>$this->url('permissions', ['action'=>'edit', 'id'=>$permission->getId()])
+            ]);
+*/
+$form->get('name')->setAttributes([
+    'class'=>'form-control', 
+    'readonly'=>'readonly',
+    'placeholder'=>'Saisir le name'
+    ]);
+
+$form->get('description')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Saisir la description'
+    ]);
+
+$form->get('submit')
+        ->setAttributes(['class'=>'btn btn-primary'])
+        ->setValue('Save');
+
+?>
+
+
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" onsubmit="return verifRoleOrPermission(this)" name="permission-form" id="permission-form">       
+                <?php $this->formDecorator($this, ['name', 'description', 'csrf'], 'submit', 'edit-permissions'); ?>
+        </form>
+    </div>    
+</div>   
+

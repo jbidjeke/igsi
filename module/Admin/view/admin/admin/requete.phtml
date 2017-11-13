@@ -1,0 +1,26 @@
+<div class="sidebar">			
+<?php 
+	require_once('Classes/Menu/MenuGauche.php');
+	$menu_gauche = new Classes_Menu_MenuGauche();  
+	echo $menu_gauche->menu_admin();
+	unset($menu_gauche);
+	$this->page = 'admin';
+?>
+</div>
+	
+<div class="content">
+<fieldset><legend style="border:1px outset #dcdcdc;padding: 5px;font-size:0.9em;background-color: #c50000;color: white;">Requêter</legend>
+<form name="requete" action="<?php echo $this->url('admin',['action'=>'executerequete']);?>" method="post">
+<?php 
+	echo 'Pour une extraction globale, ne pas mettre de critère et cliquer sur "requeter"';
+	echo utf8_decode($this->form);
+?>
+</form>
+</fieldset>
+</div>
+<script>
+$('#dateDebut').datetimepicker({ dateFormat: 'yy-mm-dd' });
+</script>
+<script>
+$('#dateFin').datetimepicker({ dateFormat: 'yy-mm-dd' });
+</script>

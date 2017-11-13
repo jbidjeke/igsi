@@ -1,0 +1,28 @@
+<div class="contentall">
+	<h3>Une erreur est survenu veuillez contacter l'administrateur web</h3>
+	<p><a href="mailto:xavier.guyenne@sfr.com?cc=nashely.romo@sfr.com&subject=Demande IG tools">Ecrire à aux administrateurs web</a></p>
+	<p><?php echo $this->message ?></p>
+	
+	<?php 
+		if (isset($this->exception))
+		{
+		?>
+			<h3>Exception information:</h3>
+			<p>
+				<b>Message:</b> <?php echo $this->exception->getMessage() ?>
+			</p>
+			
+			<h3>Stack trace:</h3>
+			<p>
+				<?php echo $this->exception->getTraceAsString() ?>
+			</p>
+			
+			<h3>Request Parameters:</h3>
+			<p>
+				<?php echo var_export($this->request->getParams(), true) ?>
+			</p>
+		<?php 
+		}
+	?>
+	<center><input type=button class="bouton" value="Retour à l'accueil" onclick="window.location='<?php echo $this->base_url_public ?>'"/>&nbsp;&nbsp;<input type=button class="bouton" value="Se connecter" onclick="window.location='<?php echo $this->base_url_public."/auth/login/" ?>'"/></center>
+</div>

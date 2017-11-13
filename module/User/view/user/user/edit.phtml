@@ -1,0 +1,56 @@
+<?php
+$this->headTitle('Edit User');
+
+/*$this->mainMenu()->setActiveItemId('users');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Users'=>$this->url('users'),
+            'Edit User'=>$this->url('users', ['action'=>'edit', 'id'=>$user->getId()])
+            ]);*/
+
+
+$form->get('email')->setAttributes([
+    'class'=>'form-control', 
+    ]);
+
+$form->get('full_name')->setAttributes([
+    'class'=>'form-control',
+    'readonly'=>'readonly',
+    'placeholder'=>''
+    ]);
+
+$form->get('status')->setAttributes([
+    'class'=>'form-control'
+    ]);
+
+$form->get('roles')->setAttributes([
+    'class'=>'form-control'
+    ]);
+
+/*$form->get('first_name')->setAttributes([
+    'class'=>'form-control'
+    ]);
+
+$form->get('organization')->setAttributes([
+    'class'=>'form-control'
+    ]);
+    */
+
+$form->get('submit')
+        ->setAttributes(['class'=>'btn btn-primary'])
+        ->setValue('Save');
+
+/*$form->prepare();*/
+?>
+
+<h1>Edit User <?= $this->escapeHtml($user->getEmail()) ?></h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" onsubmit="return verifUser(this)" name="user-form" id="user-form">  
+            <?php $this->formDecorator($this, ['email', 'full_name', 'status', 'roles'], 'submit'); ?>      
+        </form>
+    </div>    
+</div>   
+

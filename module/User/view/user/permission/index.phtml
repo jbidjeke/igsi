@@ -1,0 +1,64 @@
+<?php
+$this->headTitle('Permissions');
+
+/*$this->mainMenu()->setActiveItemId('permissions');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Permissions'=>$this->url('permissions'),
+            ]);
+*/
+?>
+
+
+
+<p>
+<a class="btn btn-default" href="
+    <?= $this->url('permissions', ['action'=>'add']); ?>">
+    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ajout d'une permission
+</a>
+</p>
+
+<table class="table table-striped">
+
+   <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Date de création</th>
+        <th>Actions</th>        
+    </tr>
+    
+    <?php foreach ($permissions as $permission): ?>
+    
+    <tr>
+        <td><?= $this->escapeHtml($permission->getId()); ?></td>
+        <td>
+            <a href="<?= $this->url('permissions', ['action'=>'view', 'id'=>$permission->getId()]); ?>">
+                <?= $this->escapeHtml($permission->getName()); ?>
+            </a> 
+        </td>
+        <td><?= utf8_decode($this->escapeHtml($permission->getDescription())); ?></a> 
+        </td>
+        <td><nobr><?= $this->escapeHtml($permission->getDateCreated()); ?></nobr></td>        
+        <td>
+            <?php if ($permission->getName() != 'admin.manage'): ?>
+            <nobr>
+            <a class="btn btn-info" href="<?= $this->url('permissions', 
+                    ['action'=>'edit', 'id'=>$permission->getId()]); ?>">
+                <span class="glyphicon glyphicon-pencil" ></span> Modifier
+            </a> |
+            <a class="btn btn-danger" href="<?= $this->url('permissions',
+                    ['action'=>'delete', 'id'=>$permission->getId()]); ?>">
+                <span class="glyphicon glyphicon-remove"></span> Supprimer
+            </a>
+            </nobr>
+            <?php endif; ?>
+        </td>    
+    </tr>
+        
+    <?php endforeach; ?>   
+    
+</table>
+
+

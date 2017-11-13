@@ -1,0 +1,175 @@
+<div class="content">
+	<center><h3>Bilan des IG du mois</h3></center><br>
+	<div class="container">
+		<form name="igdumois" action="<?php echo $this->url('',['action'=>'']);?>" method="post">
+		<center><table class='recap' border='1' width='98%' bordercolor='gray' cellpadding='0' cellspacing='0' style='font-size:12px;'>
+		<tr bgcolor="white">
+			<th><b>#</b></th>
+			<th><b>No. Ticket</b></th>
+			<th><b>Catégorie Application</b></th>
+			<th><b>Application</b></th>
+			<th><b>Sous-Système en défaut</b></th>
+			<th><b>Début de l'incident</b></th>
+			<th><b>IG de départ</b></th>
+			<th><b>IG en cours</b></th>
+			<th><b>Durée impact</b></th>
+			<th><b>Prochaine évolution d'IG</b></th>
+			<th><b>Prochain IG</b></th>
+			<th><b>Pilote incident</b></th>
+			<!-- <th><b>Sms ouverture</b></th> -->
+			<th><b>IG Clôturé</b></th>
+			<!-- <th><b>Sms clôture</b></th> -->
+		</tr>
+		<?php 
+		$counter = 1;
+		foreach($this->IGEnCours as $donnees_ticket)
+		{
+			$id_ticket=$donnees_ticket['id_ticket'];
+			$typo_service=$donnees_ticket['typo_service'];
+			$categorie_service=$donnees_ticket['categorie_service'];
+			$debut_incident=$donnees_ticket['debut_incident'];
+			$IG=$donnees_ticket['IG_debut'];
+			$cloture=$donnees_ticket['cloture'];
+			$sous_systeme=$donnees_ticket['sous_systeme'];
+			$gele=$donnees_ticket['gele'];
+			$dsko_ig=$donnees_ticket['dsko_ig'];
+			$date_cloture_incident=$donnees_ticket['date_cloture_incident'];
+			$IG_encours=$donnees_ticket['IG_encours'];
+			$duree_incident_creation=$donnees_ticket['duree_incident_creation'];
+			$duree_incident=$donnees_ticket['duree_incident'];
+			$date_prochaine_incident=$donnees_ticket['date_prochaine_incident'];
+			$IG_prochaine=$donnees_ticket['IG_prochaine'];
+			$nom_admin=$donnees_ticket['nom_admin'];
+			//$mail_ouverture=$donnees_ticket['sms_ouverture'];
+			$mail_suivi=$donnees_ticket['sms_suivi'];
+			//$mail_cloture=$donnees_ticket['sms_cloture'];
+			if($cloture=='NON')
+			{
+				echo "<tr bgcolor='#CD2626'>";
+			}
+			else if($dsko_ig=='1')
+			{
+				echo "<tr bgcolor='#C67171'>";
+			}
+			else
+			{
+				echo "<tr bgcolor='white'>";
+			}
+
+			echo "<td><center>$counter</center></td>
+				  <td><a href=\"http://intra-tms/arsys//servlet/ViewFormServlet?form=TMS_TicketReseau&server=laitue&eid=$id_ticket\" target=\"_blank\"><center>$id_ticket</center></a></td>
+				  <td><center>$categorie_service</center></td>
+				   <td><center>$typo_service</center></td>";
+			if ($sous_systeme != "" && $sous_systeme != null && $sous_systeme != " ")
+				echo "<td><center>$sous_systeme</center></td>";
+			else
+				echo "<td><center>-</center></td>";
+			echo "<td><center>$debut_incident</center></td>
+				  <td><center>$IG</center></td>
+				  <td><center>$IG_encours</center></td>
+				  <td><center>$duree_incident hrs</center></td>";
+			if($cloture=='OUI')
+			{
+				echo "<td bgcolor='#A2B5CD'><center>$date_cloture_incident</center></td>";
+			}
+			else
+			{
+				if ($gele=='OUI')
+				{
+					echo "<td bgcolor='#A2B5CD'><center>Gelé</center></td>";
+				}
+				else 
+				{
+					echo "<td><center>$date_prochaine_incident</center></td>";
+				}
+			}
+			if ($gele=='OUI')
+			{
+				echo "<td bgcolor='#A2B5CD'><center>Gelé</center></td>";
+			}
+			else 
+			{
+				echo "<td><center>$IG_prochaine</center></td>";
+			}
+			echo "
+				<td><center>$nom_admin</center></td>";
+			
+			/*
+			echo "<td>";
+			if($mail_ouverture=='OUI')
+			{
+				echo "<center>".$mail_ouverture."</center>";
+			}
+			else
+			{ 
+				echo "<a href=\"javascript:fsubmit('$id_ticket','ouverture')\"><center>$mail_ouverture</center></a>"; 
+			}
+			echo "
+			</td>";
+			*/
+			if($cloture=='OUI')
+			{
+				echo "<td><center>$cloture</center></td>";
+				// echo "<td bgcolor='#EE7600'><a href=\"javascript:fsubmit('$id_ticket','cloture')\"><center>$mail_cloture</center></a></td>";
+			}
+			else
+			{
+				echo "<td><a href=\"javascript:fsubmit('$id_ticket','cloturer')\"><center>$cloture</center></a></td>";
+				// echo "<td><center>$mail_cloture</center></td>";
+			}
+			echo "</tr>";
+			$counter++;
+			//echo '<a href="mailto:'.$id_ticket.'">'.$typo_service.'</a><br />\n';
+		}
+		?>
+		</table>
+		</center>
+		<br>
+		<center>
+		<table>
+		<tr>
+			<td>
+				<div style="width:20; height:20; background:#CD2626;"> </div>  
+			</td>
+			<td>
+				<font face="Arial" size="2">Impact en cours</font>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div style="width:20; height:20; background:#CDC5BF;"> </div>  
+			</td>
+			<td>
+				<font face="Arial" size="2">Envoyer le mail de suivi</font>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div style="width:20; height:20; background:#EE7600;"> </div>
+			</td>
+			<td>
+				<font face="Arial" size="2">Envoyer le mail de clôture</font>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div style="width:20; height:20; background:#A2B5CD;"> </div>
+			</td>
+			<td>
+				<font face="Arial" size="2">Date de clôture</font>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div style="width:20; height:20; background:#C67171;"> </div>
+			</td>
+			<td>
+				<font face="Arial" size="2">Descopé</font>
+			</td>	
+		</tr>
+		</table>
+		</center>
+		<br><!--<input type="submit" name="enregistrer" value="Enregistrer"/>-->
+		</form>
+	</div>
+</div>

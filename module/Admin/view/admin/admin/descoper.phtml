@@ -1,0 +1,13 @@
+
+	<h3>Descoper un ticket</h3><br>
+	
+    		<form name="descoper" onsubmit="return verifDescoper(this)" action="<?php echo $this->url('admin',['action'=>'enregdescoper']);?>" method="post">
+    		<?php 
+        		$this->formDecorator($this, ['id_ticket', 'IG', 'CommentaireIG', 'commentaire_ig',
+        		    'Commentaire', 'typo_service', 'categorie_service', 'debut_incident', 'duree_incident',
+        		    'nb_service', 'etat_service', 'visibilite', 'busy_hour', 'nom_admin', 'date_sms_ouverture',
+        		    'sms_commentaire', 'dsko_commentaire'  
+        		], 'Enregistrer', 'descoper');
+            ?>
+    		</form>
+    	    

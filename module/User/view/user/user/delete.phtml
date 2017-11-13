@@ -1,0 +1,20 @@
+<?php
+// module/User/view/user/user/delete.phtml:
+
+//$title = 'Delete user';
+$url   = $this->url('users', ['action' => 'delete', 'id' => $id]);
+
+//$this->headTitle($title);
+?>
+
+<p>
+    Etes-vous certain de vouloir supprimer l'utilisateur "<?= $this->escapeHtml($user->getFullName()) ?>" avec l'email "<?= $this->escapeHtml($user->getEmail()) ?>"?
+</p>
+
+<form action="<?= $url ?>" method="post">
+<div class="form-group">
+    <input type="hidden" name="id" value="<?= (int) $user->getId() ?>" />
+    <input type="submit" class="btn btn-danger" name="del" value="Yes" />
+    <input type="submit" class="btn btn-success" name="del" value="No" />
+</div>
+</form>

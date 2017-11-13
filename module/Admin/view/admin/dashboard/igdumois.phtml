@@ -1,0 +1,156 @@
+<?php
+if (count($this->paginator) == 0) {
+    ?>
+    <br><br>
+    <table border='1' width='70%' bordercolor='#66CD00' cellpadding='1' cellspacing='0'>
+        <tr>
+            <td colspan='4' width='auto'><b>PAS D'IG CE MOIS</b></td>
+        </tr>
+    </table>
+    <br><br><br>
+    <?php
+} else {
+    ?>
+    <!--  <form name="igencours" action="<?php //echo $this->url('',['action'=>'']);?>" method="post"> -->
+    <table class= 'recap' border= '1' width= '98%' bordercolor= 'gray' cellpadding='1' cellspacing='0'  style= 'font-size:12px;'>
+        <tr bgcolor="white">
+            <th><b>#</b></th>
+            <th><b>No. Ticket</b></th>
+            <th><b>Catégorie Application</b></th>
+            <th><b>Application</b></th>
+            <th><b>Début de l'incident</b></th>
+            <th><b>Fin de l'incident</b></th>
+            <th><b>IG de départ</b></th>
+            <th><b>IG en cours</b></th>
+            <th><b>IG de fin</b></th>
+            <th><b>Durée impact</b></th>
+            <th><b>1ère com.</b></th>
+            <th><b>Com. SMS</b></th>
+            <th><b>Com. à temps</b></th>
+            <th><b>IG Clôturé</b></th>
+            <th><b>Pilote incident</b></th>
+            <th><b>Objectif DEXSI</b></th>
+            <th><b>Temps avant GTR</b></th>
+            <!-- <th><b>Sms ouverture</b></th> -->
+            <!-- <th><b>Sms clôture</b></th> -->
+        </tr>
+    <?php
+    $counter = 1;
+    foreach ($this->paginator as $donnees_ticket) {
+        $id_ticket = $donnees_ticket['id_ticket'];
+        $typo_service = $donnees_ticket['typo_service'];
+        $categorie_service = $donnees_ticket['categorie_service'];
+        $debut_incident = $donnees_ticket['debut_incident'];
+        $fin_incident = $donnees_ticket['date_cloture_incident'];
+        $IG = $donnees_ticket['IG_debut'];
+        $IGFin = $donnees_ticket['IG'];
+        $cloture = $donnees_ticket['cloture'];
+        $sous_systeme = $donnees_ticket['sous_systeme'];
+        $gele = $donnees_ticket['gele'];
+        $dsko_ig = $donnees_ticket['dsko_ig'];
+        $date_cloture_incident = $donnees_ticket['date_cloture_incident'];
+        $IG_encours = $donnees_ticket['IG_encours'];
+        $duree_incident_creation = $donnees_ticket['duree_incident_creation'];
+        $duree_incident = $donnees_ticket['duree_incident'];
+        $date_prochaine_incident = $donnees_ticket['date_prochaine_incident'];
+        $IG_prochaine = $donnees_ticket['IG_prochaine'];
+        $nom_admin = $donnees_ticket['nom_admin'];
+        $date_sms_ouverture = $donnees_ticket['date_sms_ouverture'];
+        $sms_commentaire = utf8_decode($donnees_ticket['sms_commentaire']);
+        //$mail_ouverture = $donnees_ticket['sms_ouverture'];
+        //$mail_suivi = $donnees_ticket['sms_suivi'];
+        //$mail_cloture = $donnees_ticket['sms_cloture'];
+
+        if ($cloture == 'NON')
+            echo "<tr bgcolor= 'white'>";
+        else if ($dsko_ig == '1')
+            echo "<tr bgcolor= 'white'>";
+        else
+            echo "<tr bgcolor= 'white'>";
+
+        echo "<td><center>$counter</center></td>
+					  <td>$id_ticket</td>
+					  <td><center>$categorie_service</center></td>
+					  <td><center>$typo_service</center></td>";
+        /*
+          if ($sous_systeme != "" && $sous_systeme != null && $sous_systeme != " ")
+          echo "<td><center>$sous_systeme</center></td>";
+          else
+          echo "<td><center>-</center></td>";
+         */
+        $IG_encours = ($cloture != 'OUI') ? $IG_encours : "N/A";
+        $fin_incident = ($cloture != 'OUI') ? "N/A" : $fin_incident;
+        $duree_incident = ($cloture != 'OUI') ? "N/A" : $duree_incident;
+        $IGFin = ($cloture != 'OUI') ? "N/A" : $IGFin;
+        $date_sms_ouverture = ($date_sms_ouverture == '' || $date_sms_ouverture == '0000-00-00 00:00:00') ? "N/A" : $date_sms_ouverture;
+        $sms_commentaire = ($sms_commentaire == '' || $sms_commentaire == null) ? "N/A" : $sms_commentaire;
+
+        if ($date_sms_ouverture == "N/A")
+            $duree_com_debut = "N/A";
+        else {
+            $diffTempsDuree = $this->calculDate->makeDate_diff($debut_incident, $date_sms_ouverture);
+            $duree_com_debut = $this->calculDate->date_diff3($diffTempsDuree);
+            //unset($calculDate);
+        }
+
+        //$calculDate = new Classes_Utile_IgDashboard();
+        $obj_dexsi = $this->calculDate->calculDateObjectif($debut_incident, $categorie_service);
+
+        echo "<td><center>$debut_incident</center></td>
+					  <td><center>$fin_incident</center></td>
+					  <td><center>$IG</center></td>
+					  <td><center>$IG_encours</center></td>
+					  <td><center>$IGFin</center></td>
+					  <td><center>$duree_incident hrs</center></td>
+					  <td><center>$date_sms_ouverture</center></td>
+					  <td><center>$sms_commentaire</center></td>
+					  <td><center>$duree_com_debut</center></td>";
+
+
+        if ($cloture == 'OUI') {
+            $diffTemps_GTR = $this->calculDate->makeDate_diff($obj_dexsi, $fin_incident);
+            $GTR = $this->calculDate->date_diff3($diffTemps_GTR);
+            echo "<td><center>$cloture</center></td>";
+        } else {
+            $diffTemps_GTR = $this->calculDate->makeDate_diff($obj_dexsi, date('Y-m-d H:i:s'));
+            $GTR = $this->calculDate->date_diff3($diffTemps_GTR);
+            echo "<td><center>$cloture</center></td>";
+        }
+        //unset($calculDate);
+
+        echo "<td><center>$nom_admin</center></td>";
+        if ($diffTemps_GTR < 0) {
+            $couleur_td = "bgcolor='#A75CA6'";
+            $GTR = "(-)" . $GTR;
+        } else {
+            if (($diffTemps_GTR <= 30)AND ( $diffTemps_GTR >= 0)) {
+                $couleur_td = " bgcolor='#EE7600'";
+            } else {
+                $couleur_td = " bgcolor='#008000'";
+            }
+        }
+        echo "<td $couleur_td><center>" . $obj_dexsi . "</center></td>";
+        echo "<td $couleur_td><center>" . $GTR . "</center></td>";
+
+        echo "</tr>";
+        $counter++;
+    }
+    ?>
+
+    </table>
+
+        <?php
+    }
+    ?>
+
+<table class="numero_page" border="0">
+    <tr>
+        <td>
+            <?= $this->paginationControl($this->paginator, 'Sliding', 'partial/paginator/igdumois'); ?>
+        </td>
+    </tr>
+</table>
+
+
+
+

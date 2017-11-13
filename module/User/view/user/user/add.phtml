@@ -1,0 +1,79 @@
+<?php
+$this->headTitle('Add User');
+
+/*$this->mainMenu()->setActiveItemId('users');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Users'=>$this->url('users'),
+            'Add User'=>$this->url('users', ['action'=>'add'])
+            ]);*/
+
+/*$form->get('email')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'name@example.com'
+    ]);
+
+$form->get('full_name')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'John Doe'
+    ]);
+
+$form->get('status')->setAttributes([
+    'class'=>'form-control'
+    ]);
+
+$form->get('password')->setAttributes([
+    'class'=>'form-control',
+    'placeholder'=>'Enter password',
+    ]);
+
+$form->get('confirm_password')->setAttributes([
+    'class'=>'form-control',
+    'placeholder'=>'Retype password',
+    ]);
+
+$form->get('roles')->setAttributes([
+    'class'=>'form-control'
+    ]);
+
+$form->get('submit')->setAttributes(['class'=>'btn btn-primary']);
+
+$form->prepare();*/
+
+$form->get('email')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'name@example.com'
+    ]);
+
+$form->get('password')->setAttributes([
+    'class'=>'form-control',
+    'placeholder'=>'Enter password',
+    ]);
+
+$form->get('confirm_password')->setAttributes([
+    'class'=>'form-control',
+    'placeholder'=>'Retype password',
+    ]);
+
+$form->get('full_name')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Pnom'
+    ]);
+
+?>
+
+<h1>Add User</h1>
+
+<p>
+    Remplissez le formulaire et cliquer sur le bouton créer.
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" onsubmit="return verifUser(this)" name="user-form" id="user-form">
+            <?php $this->formDecorator($this, ['email', 'full_name', 'password', 'confirm_password', 'status', 'roles'], 'submit'); ?>        
+        </form>
+    </div>    
+</div>   
+

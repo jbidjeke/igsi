@@ -1,0 +1,23 @@
+
+
+
+<p>Message</p><br>
+<p>Ticket: <?php echo $this->id_ticket ?> - IG: <?php echo $this->IG ?></p>
+<div class="row">
+    <div class="col-md-6">
+        <form name="modifier" action="<?php echo $this->url('dashboard', ['action' => 'updatemessage']); ?>" method="post">
+            <?php
+            foreach ($this->message as $message) {
+                echo '<p><u>Instructions</u>: <b>' . utf8_decode($message->message) . '</b></p>';
+            }
+            echo '
+				<center><textarea name="Commentaire"></textarea></center>
+				<input type="hidden" name="id_ticket" value="' . $this->id_ticket . '"/>
+				<input type="hidden" name="IG" value="' . $this->IG . '"/>
+				<input type="hidden" name="categorie_service" value="' . $this->categorie_service . '"/><br>
+			    <input type="submit" name="Valider" value="Valider"/>';
+            ?>
+        </form>
+    </div>
+</div>
+

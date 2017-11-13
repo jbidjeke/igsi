@@ -1,0 +1,38 @@
+<?php
+$this->headTitle('Add Role');
+
+/*$this->mainMenu()->setActiveItemId('roles');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Roles'=>$this->url('roles'),
+            'Add Role'=>$this->url('roles', ['action'=>'add'])
+            ]);
+*/
+$elements = ['name', 'description', 'inherit_roles', 'csrf'];
+
+foreach( $elements as $element)
+    $form->get($element)->setAttributes([
+        'class'=>'form-control',
+    ]);
+
+
+?>
+
+
+
+<p>
+    Remplissez les champs ci-dessous.
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+         <form method="post" onsubmit="return verifRoleOrPermission(this)" name="role-form" id="role-form">  
+             <?php $this->formDecorator($this, $elements, 'submit'); ?>      
+         </form>
+    </div>    
+</div>   
+
+
+
+

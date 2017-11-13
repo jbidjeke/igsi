@@ -1,0 +1,88 @@
+<?php
+//$this->headTitle('Users');
+
+/*
+ * $this->mainMenu()->setActiveItemId('users');
+ *
+ * $this->pageBreadcrumbs()->setItems([
+ * 'Home'=>$this->url('home'),
+ * 'Manage Users'=>$this->url('users'),
+ * ]);
+ */
+?>
+
+<span style="color:red;font-size:0.8em;">*Avant de refuser une demande en la supprimant, merci de notifier le demandeur  en cliquant sur son adresse email. !</span>
+<br />
+
+<?php if ($this->access('admin.manage')) : ?>
+<p>
+	<a class="btn btn-default"
+		href="
+    <?= $this->url('users', ['action'=>'add']); ?>"> <span
+		class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ajouter
+	</a>
+</p>
+<?php endif; ?>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                    <th>ID</th>
+                    <th>E-mail</th>
+                    <th>Nom utilisateur</th>
+                    <th>Role(s)</th>
+                    <th>Date de création</th>
+                    <th>Status</th> 
+            <?php if ($this->access('admin.manage')) : ?>
+            <th>Actions</th>        
+            <?php endif; ?>
+            </tr>
+        </thead>
+        <tbody>    
+            <?php $i=count($users); ?>
+            <?php foreach ($users as $user): ?>
+            <?php if ($user->getFullName() != "Superadmin" || ($user->getFullName() == "Superadmin" && $this->access('admin.manage'))) :?>
+            <tr style="<?=$user->getStatusAsString() == 'Draft' ? 'background-color:#FFFF00;' : ''; ?>">
+                        <td><?=$i // $this->escapeHtml($user->getId()); ?></td>
+                        <td><a href="mailto:<?= $this->escapeHtml($user->getEmail()); ?>?subject=Refus de compte&body=Bonjour, Votre demande d?activation de compte NE peut PAS aboutir. Bien cordialement">
+                        <?= $this->escapeHtml($user->getEmail()); ?>
+                    </a></td>
+                        <td>
+                    <?= $this->escapeHtml($user->getFullName()); ?>
+                </td>
+                        <td>
+                    <?= $this->escapeHtml($user->getRolesAsString()); ?> 
+                </td>
+                        <td><nobr><?= $this->escapeHtml($user->getDateCreated()); ?></nobr></td>
+                        <td><?= $this->escapeHtml($user->getStatusAsString()); ?></td>
+                <?php if ($this->access('admin.manage') || $this->access('user.manage')) : ?>
+                <td>
+                    <?php if (($user->getRolesAsString() != "Administrateur" &&  !$this->access('admin.manage')) || ($user->getRolesAsString() != "Super-administrateur" &&  $this->access('admin.manage'))): ?>       
+                    <a class="btn btn-info"
+                                href="<?=$this->url('users', ['action' => 'edit','id' => $user->getId()]);?>"> <span
+                                        class="glyphicon glyphicon-pencil"></span> Modifier
+                        </a>
+                    <?php endif; ?>
+                    <?php if ($user->getRolesAsString() == "Super-administrateur"): ?>
+                    <a class="btn btn-default"
+                                href="<?=$this->url('users', ['action' => 'change-password','id' => $user->getId()]);?>">
+                                        <span class="glyphicon glyphicon-asterisk"></span> Changer Password
+                        </a>
+                    <?php endif; ?>
+                    <?php if (($user->getRolesAsString() != "Administrateur" &&  !$this->access('admin.manage')) || ($user->getRolesAsString() != "Super-administrateur" &&  $this->access('admin.manage'))): ?>                   
+                    <a class="btn btn-default"
+                                href="<?=$this->url('users', ['action' => 'delete','id' => $user->getId()]);?>"> <span
+                                        class="glyphicon glyphicon-remove"></span> Supprimer
+                        </a>
+                    <?php endif; ?>
+                </td>
+                <?php endif; ?>
+            </tr>
+            <?php endif; ?>    
+            <?php $i--; ?>
+            <?php endforeach; ?>   
+        </tbody>    
+    </table>
+</div>
+

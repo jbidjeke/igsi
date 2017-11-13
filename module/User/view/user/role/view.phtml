@@ -1,0 +1,76 @@
+<?php
+$this->headTitle('View Role');
+
+/*$this->mainMenu()->setActiveItemId('roles');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Roles'=>$this->url('roles'),
+            'View Role'=>$this->url('roles', ['action'=>'view', 'id'=>$role->getId()])
+            ]);
+*/
+?>
+
+
+
+
+<p>
+<a class="btn btn-default" href="<?= $this->url('roles', 
+                    ['action'=>'edit', 'id'=>$role->getId()]); ?>">
+                <span class="glyphicon glyphicon-pencil" ></span> Modifier le Role
+</a>
+</p>
+    
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-striped table-bordered">
+             <tr>
+                <th>ID:</th>
+                <td><?= $this->escapeHtml($role->getId()) ?></th>
+            </tr>
+            <tr>
+                <th>Nom:</th>
+                <td><?= $this->escapeHtml($role->getName()) ?></th>
+            </tr>
+            <tr>
+                <th>Description:</th>
+                <td><?= utf8_decode($this->escapeHtml($role->getDescription())) ?></th>
+            </tr>
+            <tr>
+                <th>Date de création:</th>
+                <td><?= $this->escapeHtml($role->getDateCreated()) ?></th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+
+<p>
+<a class="btn btn-default" href="<?= $this->url('roles', ['action'=>'editPermissions', 'id'=>$role->getId()]) ?>">
+  <span class="glyphicon glyphicon-check"></span> Modifier les Permissions
+</a>
+</p>
+
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+            </tr>
+            <?php foreach($allPermissions as $permission): ?>
+            <tr>
+                <td>
+                    <input type="checkbox" disabled <?php if (isset($effectivePermissions[$permission->getName()])) echo 'checked'; ?>>
+                    <?= $this->escapeHtml($permission->getName()) ?>
+                    <?php if (isset($effectivePermissions[$permission->getName()]) && $effectivePermissions[$permission->getName()]=='inherited'): ?>
+                    <em>(inherited)</em>
+                    <?php endif; ?>
+                </td>
+                <td><?= $this->escapeHtml($permission->getDescription()) ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+</div>

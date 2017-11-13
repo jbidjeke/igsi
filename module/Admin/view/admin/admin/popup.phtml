@@ -1,0 +1,66 @@
+<?php
+/*$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
+header('Content-type: text/html; charset=UTF-8');  
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Outil de calcul des IG Mobile');
+
+echo $this->doctype(); 
+*/
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+    <?php echo $this->headMeta(); ?>
+    <?php echo $this->headTitle(); ?>
+    <?php echo $this->headLink()->prependStylesheet('/css/global.css') ?>
+</head>
+<body>
+	<div id="wrap">
+		<div class="pagewrapper">
+		<div class="innerpagewrapper">
+		<div class="page">
+			<div class="contentall">
+				<center><h3>Matrice IG dynamique</h3></center><br>
+				<div class="subcontent">
+					<form name="modifier" action="<?php echo $this->url('admin',['action'=>'insert']);?>" method="post">
+					<?php 
+						$tabDuree = array('T0'=>'T0','T0_1H'=>'T0 + 1H','T0_2H'=>'T0 + 2H','T0_4H'=>'T0 + 4H','T0_8H'=>'T0 + 8H','T0_12H'=>'T0 + 12H','T0_24'=>'T0 + 24H');
+						$tabEtat = array('DEG_10'=>'80%','DEG_30'=>'60%','DEG_50'=>'40%','DEG_80'=>'20%','HS'=>'0%');
+						echo '<table>
+								<tr>
+								<td></td>';
+						foreach($tabEtat as $k=>$v)
+						{
+							echo '<td>'.$v.'</td>';
+						}
+						echo '</tr>';
+						foreach($this->categorie as $categorie)
+						{
+							echo '<tr><td><td colspan=5 align="center">'.$categorie->typo_categorie.'</td></tr>';
+							foreach($tabDuree as $k1=>$v1)
+							{
+								echo '<tr><td>'.$v1.'</td>';
+								foreach($tabEtat as $k2=>$v2)
+								{
+									//list($k,$v) = each($this->ponderation);
+								    $v = $this->ponderation->current();
+								    $v = $v->getArrayCopy();
+								    if(!isset($v['ponderation']))
+								        $ponderation = 0;
+								    else
+								        $ponderation = $v['ponderation'];
+									echo '<td><input disabled="disabled" type="text" name="'.$categorie->id_typo.'@'.$k1.'@'.$k2.'" value="'.$ponderation.'" size=5/></td>';
+								}
+								echo '</tr>';
+							}
+						}
+						echo '</table>';
+					?>
+					</form>
+				</div>
+			</div>
+		</div>
+		</div>
+		</div>
+	</div>
+</body>
+</html>

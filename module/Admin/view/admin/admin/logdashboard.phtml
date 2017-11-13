@@ -1,0 +1,228 @@
+
+<form method='POST' action='' id='log_dashboard'>
+    <table>
+        <tr>
+            <td>
+                <input type='checkbox' name='delai_javascript' id='delai_javascript' onclick="afficherModule(this, 'afficher_filtre')"> <span style="color:#999999;font-style:italic">Filtre</span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ********* FILTRE CACHBE ********* -->
+    <!-- <div id="myFilter" style="display: none;"> -->
+    <span class="afficher_filtre" id="afficher_filtre" style="display:none;">
+        <table style="width:100%">
+            <tr>
+                <td>Insertion dans la BDD</td>
+                <td><input type='checkbox' name='insertion_bdd' id='insertion_bdd' value='1' <?php if ($this->insertion_bdd == 1) echo "checked='checked'"; ?>></td>
+                <td>ID log</td>
+                <td><input type='text' name='id_log' id='id_log' <?php if (isset($this->id_log)) echo "value='" . $this->id_log . "'"; ?>></td>
+                <td>IP</td>
+                <td><input type='text' name='ip_user' id='ip_user' <?php if (isset($this->ip_user)) echo "value='" . $this->ip_user . "'"; ?>></td>
+            </tr>
+            <tr>
+                <td>Nombre de valeur affiché</td>
+                <td>
+                    <select name="limit" id="limit">
+                        <option value="10" <?php if ($this->limit == 10) echo "selected='selected'"; ?>>- 10 -</option>
+                        <option value="20" <?php if ($this->limit == 20) echo "selected='selected'"; ?>>- 20 -</option>
+                        <option value="50" <?php if ($this->limit == 50) echo "selected='selected'"; ?>>- 50 -</option>
+                        <option value="100" <?php if ($this->limit == 100) echo "selected='selected'"; ?>>- 100 -</option>
+                        <option value="200" <?php if ($this->limit == 200) echo "selected='selected'"; ?>>- 200 -</option>							
+                    </select>
+                </td>
+                <td>Date log >=</td>
+                <td><input type='text' name='date_log_sup' id='date_log_sup' <?php if (isset($this->date_log_sup)) echo "value='" . $this->date_log_sup . "'"; ?>></td>
+                <td>Date log <=</td>
+                <td><input type='text' name='date_log_inf' id='date_log_inf' <?php if (isset($this->date_log_inf)) echo "value='" . $this->date_log_inf . "'"; ?>></td>
+            </tr>
+            <tr>
+                <td>Page "controller"</td>
+                <td>
+                    <?php
+                    $i = 0;
+                    foreach ($this->list_controller as $value) {
+                        ?>
+                        <input type='checkbox' name='controller_page[]' value="<?php echo $value['nom_controller_page'] ?>" <?php for ($i = 0; $i < count($this->controller_page); $i++)
+                        if ($this->controller_page[$i] == $value['nom_controller_page']) echo "checked='checked'" ?>> <?php echo $value['nom_controller_page'] ?><br>
+                        <?php
+                        $i++;
+                    }
+                    ?>
+                </td>
+                <td>Page "action"</td>
+                <td>
+                    <?php
+                    $i = 0;
+                    foreach ($this->list_action as $value) {
+                        ?>
+                        <input type='checkbox' name='action_page[]' value="<?php echo $value['nom_action_page'] ?>" <?php for ($i = 0; $i < count($this->action_page); $i++)
+                        if ($this->action_page[$i] == $value['nom_action_page']) echo "checked='checked'" ?>> <?php echo $value['nom_action_page'] ?><br>
+                        <?php
+                        $i++;
+                    }
+                    ?>
+                </td>
+                <td>Type d'action</td>
+                <td>
+                    <?php
+                    $i = 0;
+                    foreach ($this->list_type_action as $value) {
+                        ?>
+                        <input type='checkbox' name='type_action[]' value="<?php echo $value['nom_type_action'] ?>" <?php for ($i = 0; $i < count($this->type_action); $i++)
+                        if ($this->type_action[$i] == $value['nom_type_action']) echo "checked='checked'" ?>> <?php echo utf8_decode($value['nom_type_action']) ?><br>
+                        <?php
+                        $i++;
+                    }
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Login</td>
+                <td><input type='text' name='login' id='login' <?php if (isset($this->login)) echo "value='" . $this->login . "'"; ?>></td>
+            </tr>
+            <tr>
+                <td><input type="submit" class="bouton" value="Enregistrer"></td>
+            </tr>
+        </table>
+</form>
+</span>
+
+<input type="hidden" name="path" id="path" value="<?php echo $this->path ?>">
+
+<?php
+if (sizeof($this->dashboard) == 0) {
+    ?>
+    <br><br><center>
+        <table border='1' width='70%' bordercolor='#66CD00' cellpadding='1' cellspacing='0'>
+            <tr>
+                <td colspan='4' width='auto'><center><b>PAS DE LOGS APPLICATIFS</b></center></td>
+            </tr>
+        </table>
+    </center><br><br><br>
+
+    <?php
+} else {
+    echo "<center>";
+    echo "<table class='recap' border='1' width='98%' bordercolor='gray' cellpadding='0' cellspacing='0'>";
+    /*
+      echo "<tr style='background-color:white'>";
+      echo "<th><b style='color:white;'>ID.log</b></th>";
+      echo "<th><b style='color:white;'>Utilisateur</b></th>";
+      echo "<th><b style='color:white;'>IP</b></th>";
+      echo "<th><b style='color:white;'>Date log</b></th>";
+      echo "<th><b style='color:white;'>Controller</b></th>";
+      echo "<th><b style='color:white;'>Action</b></th>";
+      echo "<th><b style='color:white;'>Type action</b></th>";
+      echo "<th><b style='color:white;'>Description</b></th>";
+      echo "</tr>";
+     */
+    echo "<tr>";
+
+    if ($this->tri == 'id_log')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'id_log_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'id_log')) . "') \">";
+    echo "<b style='color:white;'>ID.log</b>";
+    if ($this->tri == 'id_log')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'id_log_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    if ($this->tri == 'utilisateur')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'utilisateur_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'utilisateur')) . "') \">";
+    echo "<b style='color:white;'>Utilisateur</b>";
+    if ($this->tri == 'utilisateur')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'utilisateur_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    if ($this->tri == 'ip')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'ip_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'ip')) . "') \">";
+    echo "<b style='color:white;'>IP</b>";
+    if ($this->tri == 'ip')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'ip_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    if ($this->tri == 'date_log')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'date_log_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'date_log')) . "') \">";
+    echo "<b style='color:white;'>Date Log</b>";
+    if ($this->tri == 'date_log')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'date_log_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    if ($this->tri == 'controller')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'controller_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'controller')) . "') \">";
+    echo "<b style='color:white;'>Controller</b>";
+    if ($this->tri == 'controller')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'controller_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    if ($this->tri == 'action')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'action_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'action')) . "') \">";
+    echo "<b style='color:white;'>Action</b>";
+    if ($this->tri == 'action')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'action_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    if ($this->tri == 'type_action')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'type_action_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'type_action')) . "') \">";
+    echo "<b style='color:white;'>Type action</b>";
+    if ($this->tri == 'type_action')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'type_action_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    if ($this->tri == 'description')
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'description_desc')) . "') \">";
+    else
+        echo "<th><a href='#' onclick=\"submitTriLog('" . $this->url(array('action' => 'logdashboard', 'tri' => 'description')) . "') \">";
+    echo "<b style='color:white;'>Description</b>";
+    if ($this->tri == 'description')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_bas.png" . "' alt='Flèche vers le bas' title='Flèche'/>";
+    if ($this->tri == 'description_desc')
+        echo "<img class='fleche_onglet' src='" . $this->path . "/images/fleche_haut.png" . "' alt='Flèche vers le haut' title='Flèche'/>";
+    echo "</a></th>";
+
+    echo "</tr>";
+
+    foreach ($this->dashboard as $dashboard) {
+        echo "<tr>";
+        echo "<td>" . $dashboard['id_log'] . "</td>";
+        echo "<td>" . $dashboard['login'] . "</td>";
+        echo "<td>" . $dashboard['ip_user'] . "</td>";
+        echo "<td>" . $dashboard['date_log'] . "</td>";
+        echo "<td>" . $dashboard['nom_controller'] . "</td>";
+        echo "<td>" . $dashboard['nom_action'] . "</td>";
+        echo "<td>" . $dashboard['nom_type_action'] . "</td>";
+        echo "<td>" . $dashboard['description'] . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    echo "</center><br>";
+}
+?>
+</form>

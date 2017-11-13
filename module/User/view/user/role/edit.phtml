@@ -1,0 +1,42 @@
+<?php
+$this->headTitle('Edit Role');
+
+/*$this->mainMenu()->setActiveItemId('roles');
+
+$this->pageBreadcrumbs()->setItems([
+            'Home'=>$this->url('home'),
+            'Manage Roles'=>$this->url('roles'),
+            'Edit Role'=>$this->url('roles', ['action'=>'edit', 'id'=>$role->getId()])
+            ]);
+*/
+
+$this->form->get('name')->setAttributes([
+    'readonly'=>'readonly',
+    'placeholder'=>''
+]);
+
+$elements = ['name', 'description', 'inherit_roles', 'csrf'];
+foreach( $elements as $element)
+    $form->get($element)->setAttributes([
+        'class'=>'form-control',
+    ]);
+
+$form->get('submit')
+->setAttributes(['class'=>'btn btn-primary'])
+->setValue('Save');
+
+?>
+<p>
+<a class="btn btn-default" href="<?= $this->url('roles', ['action'=>'editPermissions', 'id'=>$role->getId()]) ?>">
+  <span class="glyphicon glyphicon-check"></span> Modifier les Permissions
+</a>
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post" onsubmit="return verifRoleOrPermission(this)" name="role-form" id="role-form"> 
+            <?php $this->formDecorator($this, $elements, 'submit', 'edit-role'); ?>       
+        </form>        
+    </div>    
+</div>   
+

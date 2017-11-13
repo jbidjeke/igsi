@@ -1,0 +1,20 @@
+
+	<h3>Modifier categorie</h3><br>
+
+	
+     		<form action="<?php echo $this->url('admin',['action'=>'updatecategorie']);?>" method="post">
+    		<?php 
+
+    			foreach($this->categories as $categorie)
+    			{
+    				echo '<div class="form-group">
+                            <input type="hidden" name="id_typo[]" class="form-control" value="'.$categorie->id_typo.'"/>
+    						<input type="text" name="typo_categorie[]" class="form-control" value="'.$categorie->typo_categorie.'"/>
+    						<input type="hidden" name="id[]" class="form-control" value="'.$categorie->id.'"/>
+    					</div>';
+    			}
+    			echo '<input type="submit" name="Modifier" value="Modifier"/>';
+    			
+    		?>
+    		</form>
+    		

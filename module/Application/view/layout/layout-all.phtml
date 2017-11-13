@@ -1,0 +1,210 @@
+<?php echo $this->doctype(); ?>
+<html lang="fr">
+    <head>
+        <meta charset="iso-8859-1">
+
+        <?php
+        echo $this->headMeta();
+        ?>
+        <title>IG SI</title>
+        <?php
+        echo $this->headLink()
+                ->appendStylesheet($this->baseUrl() . 'css/global.css')
+                // ->appendStylesheet($this->baseUrl().'css/start/jquery-ui-1.8.17.custom.css')
+                ->appendStylesheet($this->baseUrl() . 'css/jquery.autocomplete.css')
+                ->appendStylesheet($this->baseUrl() . 'css/jquery.alerts.css')
+                ->appendStylesheet($this->baseUrl() . 'css/token-input-facebook.css');
+        ?>
+                                  <!-- <link rel="stylesheet" href="<?= $this->baseUrl(); ?>/css/bootstrap.min.css">-->
+        <script src="<?= $this->baseUrl(); ?>js/jquery.min.js"></script>
+        <script src="<?= $this->baseUrl(); ?>js/bootstrap.min.js"></script>
+        <?php
+        echo $this->headScript()//->appendFile($this->baseUrl()."/js/jquery-1.6.2.min.js")
+                //->appendFile($this->baseUrl()."/js/jquery-ui-1.8.16.custom.min.js")
+                ->appendFile($this->baseUrl() . "js/divers2.js")
+                ->appendFile($this->baseUrl() . "js/ajax.js");
+
+        // Mettre le nom des controllers et action qui utilise JQUERY !
+        if (($this->nom_controller == "admin" &&
+                $this->nom_action == "logdashboard") ||
+                ($this->nom_controller == "dashboard" &&
+                ($this->nom_action == "index" ||
+                $this->nom_action == "murimage")) ||
+                ($this->nom_controller == "requeter" && $this->nom_action == "requete") ||
+                ($this->nom_controller == "calcul" &&
+                ($this->nom_action == "dynamique" ||
+                $this->nom_action == "update" ||
+                $this->nom_action == "degeler" ||
+                $this->nom_action == "cloturer" ||
+                $this->nom_action == "calculer" ||
+                $this->nom_action == "geler" ||
+                $this->nom_action == "insert" ||
+                $this->nom_action == "updateCloturer" ||
+                $this->nom_action == "modifier" ||
+                $this->nom_action == "update" ||
+                $this->nom_action == "modifierTicket" ||
+                $this->nom_action == "simuler" ||
+                $this->nom_action == "updateGeler"))) {
+            // Librairie pour utiliser le JQUERY
+            /* echo $this->jQuery()
+              ->setLocalPath($this->baseUrl()."/js/jquery/js/jquery-1.6.2.min.js")
+              ->setUILocalPath($this->baseUrl()."/js/jquery/js/jquery-ui-1.8.16.custom.min.js"); */
+
+            echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/jquery/js/jquery-ui-timepicker-addon.js"></script>';
+            echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/jquery.autocomplete.pack.js"></script>';
+            echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/jquery-ui-sliderAccess.js"></script>';
+            echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/jquery/js/jquery.tokeninput.js"></script>';
+
+            if ($this->nom_controller != "calcul" ||
+                    ($this->nom_action != "geler" &&
+                    $this->nom_action != "degeler" &&
+                    $this->nom_action != "updateGeler" &&
+                    $this->nom_action != "cloturer" &&
+                    $this->nom_action != "updateCloturer"))
+                echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/script_calcul1.js"></script>';
+            echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/script_global.js"></script>';
+        }
+        ?>
+
+
+
+        <script type="text/javascript" src="<?= $this->baseUrl(); ?>js/jquery.simple-dtpicker.js"></script>
+        <link type="text/css" href="<?= $this->baseUrl(); ?>css/jquery.simple-dtpicker.css" rel="stylesheet" />
+
+
+        <!-- ************** Script PARTICULIER à certain vue et controller ************** -->
+<?php
+if ($this->nom_controller == 'requeter' && $this->nom_action == 'requete')
+    echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/script_requete.js"></script>';
+
+if ($this->nom_controller == 'admin' && $this->nom_action == 'logdashboard') {
+    echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/script_log.js"></script>';
+    ?>
+            <script>
+                function submitTriLog(url)
+                {
+                    var d = document.forms;
+                    d['log_dashboard'].action = url;
+                    d['log_dashboard'].submit();
+                }
+            </script>
+    <?php
+}
+
+if ($this->nom_controller == 'dashboard' &&
+        ($this->nom_action == 'index' ||
+        $this->nom_action == 'murimage')) {
+    echo '<script type="text/javascript" src="' . $this->baseUrl() . 'js/script_dashboard.js"></script>';
+    ?>		
+            <script>
+
+            <?php
+            // Script pour mettre un message ou changer le nom du pilote sur la page du Dashboard
+            if ($this->nom_action == 'index') {
+                ?>
+                    function changeNomPilote(id_ticket, pilote)
+                    {
+                        window.open('dashboard/pilote?id_ticket=' + id_ticket + '&pilote=' + pilote, 'dynamique', 'width=500, height=300');
+                    }
+                    function openMessage(IG, categorie_service, id_ticket)
+                    {
+                        window.open("dashboard/message?IG=" + IG + "&categorie_service=" + categorie_service + "&id_ticket=" + id_ticket, 'message', 'width=500,height=300');
+                    }
+        <?php
+    }
+    ?>
+                // Fonction de rafraichissement 
+                var auto_refresh = setInterval(function () {
+                    $("#filter").submit();
+                }, 60000);
+                $(function ()
+                {
+                    var procVal = '<?php if (isset($this->proc_evo)) echo $this->proc_evo ?>';
+                    var debutVal = '<?php if (isset($this->debut_incident)) echo $this->debut_incident ?>';
+                    $('#proc_evo').val(procVal);
+                    $('#debut_incident').val(debutVal);
+                    $('.example-container > pre').each(function (i) {
+                        eval($(this).text());
+                    });
+                });
+
+                function afficherModule(option_M, type)
+                {
+                    alert("test");
+                    if (option_M.checked == 1)
+                        document.getElementById(type).style.display = "inline";
+                    else
+                        document.getElementById(type).style.display = "none";
+                }
+            </script>		
+    <?php
+}
+?>		
+
+
+        <script>
+            function afficherModule(option_M, type)
+            {
+                if (option_M.checked == 1)
+                    document.getElementById(type).style.display = "inline";
+                else
+                    document.getElementById(type).style.display = "none";
+            }
+        </script>
+    </head>
+    <body>
+        <div id="wrap">
+            <!-- Il faut utiliser ces trois DIV pour créer les bordures sur le côté -->
+            <div class="pagewrapper">
+                <div class="innerpagewrapper">
+                    <div class="page">
+
+
+                        <!-- PAGE CENTRALE à coté du menu s'il y en a un -->
+                        <div class="contentall">
+<?php echo $this->layout()->content; ?>
+                        </div>
+
+                        <div class="footer">
+<?php
+/* $menu_bas = new Classes_Menu_MenuBas();
+  echo $menu_bas->menu_bas();
+  unset($menu_bas); */
+?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('input[type=datetime]').appendDtpicker({
+                    "autodateOnStart": false,
+                    "locale": "fr",
+                    "inline": false,
+                    "dateFormat": "YYYY.MM.DD hh:mm"
+                });
+            });
+
+        </script>
+    </body>
+<?php
+/** PARTIE POUR REQUETE des fichiers HEBDO * */
+if (isset($this->fichier_created_csv) && $this->fichier_created_csv != false) {
+    ?>
+        <form name="upload" action="index.php" method="POST">
+            <input type='hidden' name='file_choice' id='file_choice' value="<?php echo $this->fichier_created_csv ?>"/>
+        </form>
+
+        <script language="Javascript">
+            document.forms['upload'].action = 'downloadxls';
+            window.open('<?php echo $this->base_url_public . "/requeter/downloadxls" ?>', 'Fenetre_de_DL', 'location=no,toolbar=no,directories=no,menubar=no,resizable=yes,scrollbars=yes,status=no,width=200,height=150,screenY=100,screenX=100');
+
+            document.forms['upload'].target = 'Fenetre_de_DL';
+            document.forms['upload'].submit();
+        </script>
+    <?php
+}
+?>
+</html>
+

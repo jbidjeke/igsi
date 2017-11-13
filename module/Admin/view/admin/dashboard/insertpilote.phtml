@@ -1,0 +1,14 @@
+
+	<h3>Pilote</h3><br>
+	<div class="container">
+	<h3>Pilote</h3><br>
+		<div class="row">
+    		<div class="col-md-6">
+		<form  action="<?php echo $this->url('dashboard',['action'=>'insertpilote']);?>" method="post">
+		<?php 
+        		$this->formDecorator($this, ['id_ticket', 'pilote' ], 'Enregistrer');
+        	?>
+		</form>
+		</div>
+       </div>
+	</div>

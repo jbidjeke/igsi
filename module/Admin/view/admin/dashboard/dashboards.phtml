@@ -1,0 +1,233 @@
+<meta http-equiv="Refresh" content="30; URL=<?php echo $this->url('dashboard', ['action'=>'dashboards']);?>">
+
+
+	<?php 
+	$igDashboard = $this->igDashboard;
+        $calculDate = $this->calculDate;
+		//mobile
+		echo '<br><b>Dashboard SI</b>';
+		if (count($this->si) == 0)
+		{
+		?>
+			<br><br>
+				<table border='1' width='70%' bordercolor='#66CD00' cellpadding='1' cellspacing='0'>
+					<tr>
+						<td colspan='4' width='auto'><b>PAS D'IG EN COURS</b></td>
+					</tr>
+				</table>
+			<br><br><br>
+		<?php
+		}
+		else
+		{
+			echo "<table class='recap' border='1' width='98%' bordercolor='gray' cellpadding='0' cellspacing='0' style='font-size:12px;'>
+			<tr style='background-color:white'>
+				<th><b>#</b></th>
+				<th><b>No. Ticket</b></th>
+				<th><b>Catégorie Application</b></th>
+				<th><b>Application</b></th>
+				<th><b>Description incident</b></th>			
+				<th><b>Début de l'incident</b></th>
+				<th><b>IG de départ</b></th>
+				<th><b>IG en cours</b></th>
+				<th><b>Durée impact</b></th>
+				<th><b>Prochaine évolution d'IG</b></th>
+				<th><b>Prochain IG</b></th>
+				<th><b>Pilote incident</b></th>
+				<th><b>Objectif DEXSI</b></th>
+				<th><b>Temps avant GTR</b></th>
+			</tr>";
+			$counter = 1;
+			foreach ($this->si as $dashboard)
+			{
+				$date_objectifDES = $calculDate->calculDateObjectif($dashboard['debut_incident'],$dashboard['categorie_service']);
+				if ($dashboard['cloture']=='NON')
+				{
+					$diffTemps = $calculDate->makeDate_diff($date_objectifDES,date('Y-m-d H:i:s'));
+					$GTR = $calculDate->date_diff3($diffTemps);
+					$diffTempsDuree = $calculDate->makeDate_diff($dashboard['debut_incident'],date('Y-m-d H:i:s'));
+					$duree_incident = $calculDate->date_diff3($diffTempsDuree);
+				}
+				else
+				{
+					$diffTemps = $calculDate->makeDate_diff($date_objectifDES,$dashboard['date_prochaine_incident']);
+					$GTR = $calculDate->date_diff3($diffTemps);
+					$diffTempsDuree = $calculDate->makeDate_diff($dashboard['debut_incident'],$dashboard['date_cloture_incident']);
+					$duree_incident = $calculDate->date_diff3($diffTempsDuree);
+				}
+
+				echo "<td>$counter</td>";
+				
+				if ($dashboard['msg_pronet'] == 'OUI') 
+					echo "<td bgcolor='#FFD700'>";
+				else 
+					echo "<td>";
+					
+				echo "".$dashboard['id_ticket']."</td>";
+				echo "<td>".$dashboard['categorie_service']."</td>
+					  <td>".$dashboard['typo_service']."</td>";
+				
+				if ($dashboard['commentaire'] != "" && $dashboard['commentaire'] != null)
+					echo "<td>".str_replace('\\','',utf8_decode($dashboard['commentaire']))."</td>";
+				else
+					echo "<td>-</td>";
+					
+				echo "<td>".$dashboard['debut_incident']."</td>
+					  <td>".$dashboard['IG_debut']."</td>";
+				
+				if ($dashboard['TypeIG'] != '')
+					echo "<td>".$dashboard['IG_encours']." (".$dashboard['TypeIG'].")</td>";
+				else
+					echo "<td>".$dashboard['IG_encours']."</td>";
+					
+				echo "<td>".$duree_incident."</td>";
+				if ($dashboard['cloture'] == 'OUI')
+					echo "<td bgcolor='#A2B5CD'>".$dashboard['date_prochaine_incident']."</td>";
+				else
+				{
+					if ($dashboard['gele']=='OUI')
+						echo "<td bgcolor='#A2B5CD'>Gelé</td>";
+					else 
+						echo "<td>".$dashboard['date_prochaine_incident']."</td>";
+				}
+				if ($dashboard['gele']=='OUI')
+					echo "<td bgcolor='#A2B5CD'>Gelé</td>";
+				else 
+					echo "<td>".$dashboard['IG_prochaine']."</td>";
+				
+				if($diffTemps<0)
+				{
+					$couleur_td = "bgcolor='#A75CA6'";
+					$GTR = "(-)".$GTR;
+				}
+				else
+				{
+					if(($diffTemps<=30)AND($diffTemps>=0))
+					{
+						$couleur_td = " bgcolor='#EE7600'";
+					}
+					else
+					{
+						$couleur_td = " bgcolor='#008000'";
+					}
+				}
+				
+				echo "<td>".$dashboard['nom_admin']."</td>
+					  <td $couleur_td>$date_objectifDES</td>
+					  <td $couleur_td>".str_replace(' ','j ',$GTR)."</td>
+				</tr>";
+				$counter++;
+			}
+			echo "</table>";
+		}
+		
+		
+		
+		//bureautique
+		echo '<b>Bureautique</b>';
+		
+		if(count($this->bureautique) == 0)
+		{
+		?>
+			<br><br>
+				<table border='1' width='70%' bordercolor='#66CD00' cellpadding='1' cellspacing='0'>
+					<tr>
+						<td colspan='4' width='auto'><b>PAS D'IG EN COURS</b></td>
+					</tr>
+				</table>
+			<br><br><br>
+		<?php
+		}
+		else
+		{
+		    
+			echo "<table class='recap' border='1' width='98%' bordercolor='gray' cellpadding='0' cellspacing='0' style='font-size:12px;'>
+			<tr style='background-color:white'>
+				<th><b>#</b></th>
+				<th><b>No. Ticket</b></th>
+				<th><b>Catégorie Application</b></th>
+				<th><b>Application</b></th>
+				<th><b>Début de l'incident</b></th>
+				<th><b>IG de départ</b></th>
+				<th><b>IG en cours</b></th>
+				<th><b>Durée impact</b></th>
+				<th><b>Prochaine évolution d'IG</b></th>
+				<th><b>Prochain IG</b></th>
+				<th><b>Pilote incident</b></th>
+				<th><b>Objectif DPES</b></th>
+				<th><b>Temps avant GTR</b></th>
+			</tr>";
+			$counter = 1;
+			
+			foreach($this->bureautique as $dashboard)
+			{
+				$date_objectifDES = $calculDate->calculDateObjectif($dashboard['debut_incident'],$dashboard['categorie_service']);
+				if($dashboard['cloture'] == 'NON')
+				{
+					$diffTemps = $calculDate->makeDate_diff($date_objectifDES,date('Y-m-d H:i:s'));
+					$GTR = $calculDate->date_diff3($diffTemps);
+					$diffTempsDuree = $calculDate->makeDate_diff($dashboard['debut_incident'],date('Y-m-d H:i:s'));
+					$duree_incident = $calculDate->date_diff3($diffTempsDuree);
+				}
+				else
+				{
+					$diffTemps = $calculDate->makeDate_diff($date_objectifDES,$dashboard['date_prochaine_incident']);
+					$GTR = $calculDate->date_diff3($diffTemps);
+					$diffTempsDuree = $calculDate->makeDate_diff($dashboard['debut_incident'],$dashboard['date_cloture_incident']);
+					$duree_incident = $igDashboard->date_diff3($diffTempsDuree);
+				}
+				if($diffTemps < 0)
+				{
+					echo "<tr>";
+					$GTR = "(-)".$GTR;
+				}
+				else
+				{
+					if(($diffTemps<=30)AND($diffTemps>=0))
+						echo "<tr>";
+					else
+						echo "<tr>";
+				}
+				echo "<td>$counter</td>";
+				
+				if ($dashboard['msg_pronet'] == 'OUI')
+					echo "<td bgcolor='#FFD700'>";
+				else 
+					echo "<td>";
+					
+				echo "".$dashboard['id_ticket']."</td>";
+				echo "<td>".$dashboard['categorie_service']."</td>
+					  <td>".utf8_decode($dashboard['typo_service'])."</td>
+					  <td>".$dashboard['debut_incident']."</td>
+					  <td>".$dashboard['IG_debut']."</td>";
+				
+				if ($dashboard['TypeIG'] != '')
+					echo "<td>".$dashboard['IG_encours']." (".$dashboard['TypeIG'].")</td>";
+				else
+					echo "<td>".$dashboard['IG_encours']."</td>";
+					
+				echo "<td>".$duree_incident."</td>";
+				
+				if($dashboard['cloture'] == 'OUI')
+					echo "<td bgcolor='#A2B5CD'>".$dashboard['date_prochaine_incident']."</td>";
+				else
+				{
+					if ($dashboard['gele']=='OUI')
+						echo "<td bgcolor='#A2B5CD'>Gelé</td>";
+					else 
+						echo "<td>".$dashboard['date_prochaine_incident']."</td>";
+				}
+				if ($dashboard['gele']=='OUI')
+					echo "<td bgcolor='#A2B5CD'>Gelé</td>";
+				else 
+					echo "<td>".$dashboard['IG_prochaine']."</td>";
+				echo "
+					<td>".$dashboard['nom_admin']."</td>
+					<td>$date_objectifDES</td>
+					<td>$GTR</td>
+				</tr>";
+				$counter++;
+			}
+			echo "</table>";
+		}
+	?>

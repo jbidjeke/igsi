@@ -1,0 +1,31 @@
+<?php
+$this->headTitle('Thank You');
+?>
+
+<div class="row">
+<div class="col-md-offset-4 col-md-5">
+<h1>Reinitialiser votre mot de passe</h1>
+
+<?php if ($id=='sent'): ?>
+<p>
+    Un lien de réinitialisation de mot de passe a été envoyé à votre adresse e-mail.
+</p>
+<?php elseif ($id=='invalid-email'): ?>
+<p>
+    Il n'y a pas d'utilisateur avec un tel courrier électronique.
+</p>
+<?php elseif ($id=='set'): ?>
+<p>
+    Votre nouveau mot de passe a été défini avec succès.
+</p>
+<p>
+    Return to <a href="<?= $this->url('login'); ?>">login page</a>.
+</p>
+<?php elseif ($id=='failed'): ?>
+
+    La touche de réinitialisation invalide ou elle a peut-être expiré. Veuillez cliquer
+    <a href="<?= $this->url('reset-password') ?>">ici</a> et essayer de réinitialiser votre mot de passe.
+</p>
+<?php endif; ?>
+</div>
+</div>    

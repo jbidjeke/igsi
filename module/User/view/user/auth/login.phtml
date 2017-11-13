@@ -1,0 +1,98 @@
+<?php
+$this->headTitle('Sign in');
+
+/* $this->mainMenu()->setActiveItemId('login'); */
+
+if ($step == 1)
+    $elements = ['full_name', 'step'];
+else
+    $elements = ['full_name', 'password', 'step'];
+
+foreach ($elements as $element)
+    $form->get($element)->setAttributes([
+        'class' => 'form-control',
+    ]);
+?>
+
+<table>
+    <tbody><tr>
+            <td>
+                <h5>IG Tools Authentification</h5>
+            </td>
+            <td>
+                <h5>Se connecter</h5>
+            </td>
+        </tr>
+        <tr>
+            <td class="barre_droite">
+                L'authentification va vous permettre d'accéder à certaines fonctionnalités de l'outil<br>
+                Il existe plusieurs types de comptes :<br>	
+                <span class="marge">- Ls</span><br>
+                <span class="marge">- Pilote</span><br>
+                <span class="marge">- Administrateur</span><br>
+                En fonction du type de compte, vous pourrez accéder à toute ou une partie des fonctionnalités de l'outil
+            </td>
+            <td>
+
+                <form class="form-signin" method="post" >
+                    <h2 class="form-signin-heading">SVP, veuillez-vous connecter</h2>
+                    <?php if ($isLoginError): ?>
+                        <div class="alert alert-warning" role="alert">
+                            Incorrect login et/ou password. 
+                            <a href="<?= $this->url('reset-password') ?>">Rappel password?</a>
+                        </div>
+                    <?php endif; ?>
+
+
+                    <?php $this->formDecorator($this, $elements); ?> 
+                    <?php if ($step == 1):?>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr class="full_name">
+                                    <td>Rôle</td>
+                                    <td>
+                                        <select name="role" id="role" class="form-control"><option value="">-- Choisir un rôle --</option>
+                                            <option value="Administrateur">Administrateur Igsi</option>
+                                            <option value="Administrateur-bur">Administrateur Bureautique</option>
+                                            <option value="Pilote">Pilote Igsi</option>
+                                            <option value="Exploitant-bur">Exploitant bureautique</option>
+                                            <option value="Ls">Ls</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php endif; ?>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="checkbox">
+                                <label>
+                                    <?= $this->formElement($form->get('remember_me')); ?> Se souvenir de moi
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <!--
+                            <div class="checkbox">
+                                 <label>
+                            <?= $this->formElement($form->get('check_me')); ?> Me proposer un rôle
+                                 </label>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                    <?= $this->formElement($form->get('redirect_url')); ?>
+                    <?= $this->formElement($form->get('csrf')) ?>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit"  ><?=($step != 1) ? "Connexion AUI" : "Soumettre"; ?></button>
+
+                </form>	
+
+
+            </td>
+        </tr>
+    </tbody>
+</table>
+

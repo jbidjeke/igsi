@@ -1,0 +1,57 @@
+
+	<h3>Message dashboard</h3><br>
+		
+		<form name="message" action="<?php echo $this->url('admin',['action'=>'updatemessage']);?>" method="post">
+		<?php 
+
+			echo '<table>
+					<tr>
+						<td>IG</td>
+						<td>Categorie</td>
+						<td>Message</td>
+					</tr>
+						';
+			foreach($this->message as $message)
+			{
+				echo '<tr>
+						<td><input type="number"  name="IG[]" value="'.$message->IG.'"/></td>
+						<td>
+						<select name="categorie_service[]">';
+			
+				
+				for ($i = 0; $i < count($this->categorie); $i++){
+				    $sel = '';
+				    if($this->categorie[$i]['typo_categorie']==$message->categorie_service) $sel = 'selected';
+				    echo '<option value="'.$this->categorie[$i]['typo_categorie'].'" '.$sel.'>'.$this->categorie[$i]['typo_categorie'].'</option>';
+				    
+				};
+				
+				
+				echo '</select>
+						</td>
+						<td><textarea name="message[]">'.utf8_decode($message->message).'</textarea></td>
+					</tr>';
+			}
+			
+			for($i=0;$i<5;$i++)
+			{
+				echo '<tr>
+						<td><input type="text" name="IG[]" value=""/></td>
+						<td>
+						<select name="categorie_service[]">';
+				
+				for ($j = 0; $j < count($this->categorie); $j++)
+				{
+					echo '<option value="'.$this->categorie[$j]['typo_categorie'].'" >'.$this->categorie[$j]['typo_categorie'].'</option>';
+				}
+				
+				echo '</select>
+						</td>
+						<td><textarea name="message[]"></textarea></td>
+					</tr>';
+			}
+			echo '</table>';
+			echo '<input type="submit" name="Enregistrer" value="Enregistrer"/>';
+		?>
+		</form>
+	

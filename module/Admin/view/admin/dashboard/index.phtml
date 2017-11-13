@@ -1,0 +1,432 @@
+<?php if ($this->access('pilote.manage')) : ?>
+
+    <div class="alert <?= $this->igEnAttente->count() === 0 ? 'alert-warning' : 'alert-danger' ?>" role="alert">
+        Il y a <span id="nbIgAttente" class="<?= $this->igEnAttente->count() === 0 ? '' : 'label label-success' ?>"> <?= $this->igEnAttente->count(); ?></span> demande(s) en attente.
+    </div>
+
+<?php endif; ?>
+<table>
+    <tr>
+        <td>
+            <input type='checkbox' name='delai_javascript' id='delai_javascript' onclick="afficherModule(this, 'afficher_filtre')"> 
+            <span style="color: #999999; font-style: italic">Filtre</span>
+        </td>
+    </tr>
+</table>
+
+<!-- ********* FILTRE CACHBE ********* -->
+<!-- <div id="myFilter" style="display: none;"> -->
+<span class="afficher_filtre" id="afficher_filtre" style="display: none;">
+    <form class='upload' name='filter' id='filter' method='POST' action=''>
+        <input type='hidden' name='flag_recherche' id='flag_recherche' /> 
+        <input type='hidden' name='path' id='path' value="<?php echo $this->baseUrl(); ?>" />
+        <table style="width: 100%">
+            <tr>
+                <td style="font-size: 12px; color: grey; align: right;">N°Ticket</td>
+                <td><input type='text' name='id_ticket' id='id_ticket' maxlength='12' value="<?php echo $this->idTicket; ?>" size='6'></td>
+                <td style="font-size: 12px; color: grey; align: right">Cat. Ticket</td>
+                <td>
+                    <select name="categorie" id="categorie">
+                        <option VALUE=""></option>
+                        <option VALUE="PLatinium" <?php if ($this->idCategorie == "Platinium") echo "selected = 'selected'"; ?>>Platinium</option>
+                        <option VALUE="Or" <?php if ($this->idCategorie == "Or") echo "selected = 'selected'"; ?>>Or</option>
+                        <option VALUE="Argent" <?php if ($this->idCategorie == "Argent") echo "selected = 'selected'"; ?>>Argent</option>
+                        <option VALUE="Bronze" <?php if ($this->idCategorie == "Bronze") echo "selected = 'selected'"; ?>>Bronze</option>
+                    </select>
+                </td>
+                <td style="font-size: 12px; color: grey; align: right">App</td>
+                <td><input type="text" value="<?php echo $this->apli; ?>" id="apli" name="apli"></td>
+            </tr>
+            <tr>
+                <td style="font-size: 12px; color: grey; align: right">Déb. incident</td>
+                <td><input style="width: 80px; height: 15px;" type="text"
+                           name="debut_incident" id="debut_incident" value="" /></td>
+                <td style="font-size: 12px; color: grey; align: right">Date évol IG</td>
+                <td><input style="width: 80px; height: 15px;" type="text"
+                           name="proc_evo" id="proc_evo" value="" /></td>
+                <td style="color: grey; align: right">Pilote</td>
+                <td><input type='text' name='pilote' id='pilote' maxlength='10'
+                           value='<?php echo $this->pilote; ?>' size='15'></td>
+            </tr>
+            <tr>
+                <td style="font-size: 12px; color: grey; align: right;">IG dép.</td>
+                <td><select id="ig_depart" name="ig_depart">
+                        <?php
+                        echo '<option label="-- Choisir --" value="0">-- Choisir --</option>';
+                        for ($i = 2; $i <= 5; $i ++) {
+                            for ($j = 0; $j <= 9; $j ++) {
+                                if (($i == 5) && ($j == 1))
+                                    break;
+                                if ($this->ig_depart == $i . '.' . $j)
+                                    echo '<option label="' . $i . '.' . $j . '" value="' . $i . '.' . $j . '" selected="selected">' . $i . '.' . $j . '</option>';
+                                else
+                                    echo '<option label="' . $i . '.' . $j . '" value="' . $i . '.' . $j . '">' . $i . '.' . $j . '</option>';
+                            }
+                        }
+                        ?>
+                    </select></td>
+                <td style="font-size: 12px; color: grey; align: right">IG en cours</td>
+                <td><select id="ig_encours" name="ig_encours">
+                        <?php
+                        echo '<option label="-- Choisir --" value="0">-- Choisir --</option>';
+                        for ($i = 2; $i <= 5; $i ++) {
+                            for ($j = 0; $j <= 9; $j ++) {
+                                if (($i == 5) && ($j == 1))
+                                    break;
+                                if ($this->ig_encours == $i . '.' . $j)
+                                    echo '<option label="' . $i . '.' . $j . '" value="' . $i . '.' . $j . '" selected="selected">' . $i . '.' . $j . '</option>';
+                                else
+                                    echo '<option label="' . $i . '.' . $j . '" value="' . $i . '.' . $j . '">' . $i . '.' . $j . '</option>';
+                            }
+                        }
+                        ?>
+                    </select></td>
+                <td style="font-size: 12px; color: grey; align: right">Prochain IG</td>
+                <td><select id="ig_proc" name="ig_proc">
+                        <?php
+                        echo '<option label="-- Choisir --" value="0">-- Choisir --</option>';
+                        for ($i = 2; $i <= 5; $i ++) {
+                            for ($j = 0; $j <= 9; $j ++) {
+                                if (($i == 5) && ($j == 1))
+                                    break;
+                                if ($this->ig_proc == $i . '.' . $j)
+                                    echo '<option label="' . $i . '.' . $j . '" value="' . $i . '.' . $j . '" selected="selected">' . $i . '.' . $j . '</option>';
+                                else
+                                    echo '<option label="' . $i . '.' . $j . '" value="' . $i . '.' . $j . '">' . $i . '.' . $j . '</option>';
+                            }
+                        }
+                        ?>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div style="text-align: center">
+            <button class="bouton" type="submit" name="a">Recherche</button>
+            <button class="bouton" TYPE="reset" NAME="nom" VALUE="Reset">Reset</button>
+        </div>
+        <br>
+        <br>
+    </form>
+</span>
+<!-- ********* FIN FILTRE CACHBE ********* -->
+
+<!-- Debut de la nouvelle integration -->
+
+<div class="board_container table-responsive">
+    <table class="board_container_table table">
+        <thead>
+            <tr>
+                <?php $href_path = $this->serverUrl() . '/dashboard/index/'; ?>
+                <th>#</th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'idTicket' ? 'idTicket_desc' : 'idTicket') ?> "> N°Ticket <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'idCategorie' ? 'idCategorie_desc' : 'idCategorie') ?> "> Cat. APP. <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'apli' ? 'apli_desc' : 'apli') ?> "> App. <span class="sort_arrow">&#8661;</span>  </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'desc_incident' ? 'desc_incident_desc' : 'desc_incident') ?> "> Desc. inc. <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'debut_incident' ? 'debut_incident_desc' : 'debut_incident') ?> "> Déb. inc. <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'ig_depart' ? 'ig_depart_desc' : 'ig_depart') ?> "> IG dép. <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'ig_encours' ? 'ig_encours_desc' : 'ig_encours') ?> "> IG en cours <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'impact' ? 'impact_desc' : 'impact') ?> "> Durée imp. <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'proc_evo' ? 'proc_evo_desc' : 'proc_evo') ?> "> Prochaine évol. IG <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'ig_proc' ? 'ig_proc_desc' : 'ig_proc') ?> "> Prochain IG <span class="sort_arrow">&#8661;</span> </a></th>
+                <th><a title="" href="<?= $href_path . ($this->tri === 'pilote' ? 'pilote_desc' : 'pilote') ?> "> Pilote inc. <span class="sort_arrow">&#8661;</span> </a></th>
+                <th>Objectif DEXSI</th>
+                <th>Temps avant GTR</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $count_list_ig = 0;
+            $igDashboard = $this->igDashboard;
+            $calculDate = $this->calculDate;
+
+            function affiche_gtr($igDashboard, $obj_dexsi, $date_spericique) {
+                $diffTemps_GTR = $igDashboard->makeDate_diff($obj_dexsi, $date_spericique);
+                $GTR = $igDashboard->date_diff3($diffTemps_GTR);
+                $gtrClass = ($diffTemps_GTR < 0 ? 'class_A75CA6' : (($diffTemps_GTR <= 30) and ( $diffTemps_GTR >= 0) ? 'class_EE7600' : 'class_008000'));
+
+                return [
+                    "diffTemps_GTR" => $diffTemps_GTR,
+                    "gtrClass" => $gtrClass,
+                    "gtr" => $GTR
+                ];
+            }
+
+            function getStatusCssClass($diffTemps, $popu, $geleStatus, $validationState) {
+                if ($diffTemps >= 0 && $diffTemps < 15) {
+                    return "action_avant_15";
+                }
+
+                if (in_array($validationState, [11, 21, 31, 41, 51])) {
+                    return "validation_a_faire";
+                } else {
+                    if (sizeof($popu) > 0) {
+                        if ($geleStatus === 'OUI') {
+                            return "ig_geler";
+                        } else {
+                            return "action_a_realiser";
+                        }
+                    } else if ($geleStatus === 'OUI') {
+                        return "ig_geler";
+                    }
+                }
+                return;
+            }
+
+            function getUrlOnStatus($view, $incident) {
+                if ($incident['etat'] == 11 || $incident['etat'] == 51) {
+                    return $view->url('calcul', ['action' => 'modifierticket']) . '?id_ticket=' . $incident['id_ticket'] . '&temp=' . $incident['etat'];
+                }
+                if ($incident['etat'] == 21) {
+                    return $view->url('calcul', ['action' => 'geler']) . '?id_ticket=' . $incident['id_ticket'] . '&temp';
+                }
+                if ($incident['etat'] == 31) {
+                    return $view->url('calcul', ['action' => 'degeler']) . '?id_ticket=' . $incident['id_ticket'] . '&temp';
+                }
+                if ($incident['etat'] == 41) {
+                    return $view->url('calcul', ['action' => 'cloturer']) . '?id_ticket=' . $incident['id_ticket'] . '&temp';
+                }
+                return;
+            }
+            ?>
+            <?php if (sizeof($this->paginator) === 0) : ?>
+                <tr> <td colspan='4' width='auto'><b>PAS D'IG EN COURS</b></td> </tr>
+            <?php else : ?>
+                <?php foreach ($this->paginator as $dsh_key => $incident) : ?>
+                    <?php
+                    $count_list_ig ++;
+                    $diffTemps = $calculDate->makeDate_diff($incident['date_prochaine_incident'], date('Y-m-d H:i:s'));
+                    $diffTempsDuree = $calculDate->makeDate_diff($incident['debut_incident'], date('Y-m-d H:i:s'));
+                    $duree_incident = $calculDate->date_diff3($diffTempsDuree);
+                    $obj_dexsi = $calculDate->calculDateObjectif($incident['debut_incident'], $incident['categorie_service']);
+                    $diffTemps_GTR = $calculDate->makeDate_diff($obj_dexsi, $incident['date_prochaine_incident']);
+
+                    $popup = $this->message;
+                    $popu = $popup->findMessage($incident['IG_debut'], $incident['IG_encours'], $incident['categorie_service'], $incident['id_ticket']);
+                    // var_dump($incident); die();
+                    ?>
+                    <tr class="ig_raw <?= getStatusCssClass($diffTemps, $popu, $incident['gele'], $incident['etat']) ?>" >
+                        <td class="num_ordre num_ordre<?= $count_list_ig ?>">
+                            <?php if (sizeof($popu) > 0) : ?>
+                                <?php foreach ($popu as $pop) : ?>
+                                    <?php if ($this->access('pilote.manage')) : ?>
+
+                                            <?php if (!in_array($incident['etat'], [11, 21, 31, 41, 51])): ?>    
+                                            <a href="javascript:openMessage('<?= $pop->IG ?>', '<?= $incident['categorie_service'] ?>', '<?= $incident['id_ticket'] ?>')">
+                                            <?= $count_list_ig ?> 
+                                            </a>
+                                        <?php endif; ?>
+
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php else : ?>
+            <?= $count_list_ig; ?>
+                        <?php endif; ?>
+                        </td>
+
+                            <?php if ($incident['msg_pronet'] == 'OUI'): ?> 
+                            <td bgcolor='#FFD700' class="id_ticket <?= $incident['id_ticket']; ?>">
+                            <?php else: ?>
+                            <td class="id_ticket <?= $incident['id_ticket']; ?>">
+                            <?php endif; ?>
+
+                            <?php if ($this->access('ls.manage')) : ?>
+
+                                <?php if ($this->access('pilote.manage')) : ?>
+
+                                    <?php if (getUrlOnStatus($this, $incident) !== NULL) : ?>
+                                        <a href="<?= getUrlOnStatus($this, $incident) ?>"> <?= $incident['id_ticket'] ?></a>
+                                    <?php else : ?>
+                                        <?= $incident['id_ticket']; ?>
+                                    <?php endif; ?>
+
+                                <?php else : ?>
+                                    <?= $incident['id_ticket']; ?>
+            <?php endif; ?>
+            <?php if (!in_array($incident['etat'], [11, 21, 31, 41, 51])) : ?>       
+                                    <div class="ticket_actions_wrapper">
+                                        <form action="<?= $this->serverUrl() . $this->url('calcul', ['action' => 'modifierTicket']); ?>"
+                                              method="POST" class="ticket_actions_modifier form_modifier<?= $incident['id_ticket'] ?>">
+                                            <input type="hidden" name="ticket_ouvert" value="<?= $incident['id_ticket'] ?>" /> 
+                                            <input type="hidden" name="motif" value="Modification des criteres" /> 
+                                            <input type="submit" value="" title="Modifier l'IG" class="submit_modifier" />
+                                        </form>
+
+                <?php if ($incident['gele'] === 'NON') : ?>
+                                            <form action="<?= $this->serverUrl() . $this->url('calcul', ['action' => 'geler']) ?>"
+                                                  method="POST" class="ticket_actions_geler form_geler <?= $incident['id_ticket'] ?>" >
+                                                <input type="hidden" name="id_ticket" value="<?= $incident['id_ticket'] ?>" /> 
+                                                <input type="submit" title="Geler l'IG" value="" class="submit_geler" />
+                                            </form>
+                <?php else : ?>
+                                            <form action="<?= $this->serverUrl() . $this->url('calcul', ['action' => 'degeler']); ?>"
+                                                  method="POST" class="ticket_actions_degeler form_degeler <?= $incident['id_ticket'] ?>">
+                                                <input type="hidden" name="id_ticket" value="<?= $incident['id_ticket'] ?>" /> 
+                                                <input type="submit" title="Dégeler l'IG" value="" />
+                                            </form>
+                <?php endif; ?>
+
+                                        <div class="ticket_actions_cloturer">
+                                            <a href="<?= $this->serverUrl() . $this->url('calcul', ['action' => 'cloturer']) . '?id_ticket=' . $incident['id_ticket'] ?>"
+                                               title="Cloturer le ticket <?= $incident['id_ticket'] ?>">&nbsp;&nbsp;</a>
+                                        </div>
+                                        <!--
+                                        <?php if ($incident['sms']): ?>
+                                            <div class="ticket_actions_comSms"></div>
+                                    <?php endif; ?>
+                                        -->
+                                    </div>
+                                <?php endif; ?>
+                            <?php else: ?>
+            <?= $incident['id_ticket']; ?>
+        <?php endif; ?>
+                        </td>
+                        <td class="categorie_service <?= $incident['categorie_service'] ?>"> <?= $incident['categorie_service'] ?> </td>
+                        <td class="typo_service <?= $incident['typo_service'] ?>"> <?= utf8_decode($incident['typo_service']) ?> </td>
+                        <td class="commentaire"> <?= str_replace(['_', '\\'], [' ', ' '], utf8_decode($incident['commentaire'])); ?> </td>
+                        <td class="debut_incident"> <?= $incident['debut_incident'] ?> </td>
+                        <td class="IG_debut"> <?= $incident['IG_debut'] ?> </td>
+                        <td class="IG_encours"> <?= $incident['IG_encours'] ?> <?= $incident['TypeIG'] ?> </td>
+                        <td class="duree_incident"> <?= $duree_incident ?> </td>
+                        <td class="date_prochaine_incident"> <?= $incident['date_prochaine_incident'] ?> </td>
+                        <td class="IG_prochaine"> <?= $incident['gele'] === 'NON' ? $incident['IG_prochaine'] : 'Gelé' ?> </td>
+
+                        <?php if ($this->access('pilote.manage')) : ?>
+                            <?php $pilote = htmlspecialchars(addslashes($incident['nom_admin'])); ?>
+                            <td><a href="javascript:changeNomPilote('<?= $incident['id_ticket'] ?>','<?= $pilote ?>' )" > <?= $incident['nom_admin'] ?></a></td>
+                        <?php else : ?>
+                            <td><?= $incident['nom_admin'] ?></td>
+                            <?php endif; ?>
+
+                        <td class="obj_dexsi <?= affiche_gtr($igDashboard, $obj_dexsi, ($incident['cloture'] === 'OUI' ? $incident['date_prochaine_incident'] : date('Y-m-d H:i:s')))["gtrClass"] ?> "> 
+                            <?= $obj_dexsi ?> 
+                        </td>
+                        <td class="gtr <?= affiche_gtr($igDashboard, $obj_dexsi, ($incident['cloture'] === 'OUI' ? $incident['date_prochaine_incident'] : date('Y-m-d H:i:s')))["gtrClass"] ?> "> 
+                    <?= affiche_gtr($igDashboard, $obj_dexsi, ($incident['cloture'] === 'OUI' ? $incident['date_prochaine_incident'] : date('Y-m-d H:i:s')))["gtr"] ?> 
+                        </td>
+                    </tr>
+    <?php endforeach; ?>
+<?php endif; ?>
+        </tbody>
+    </table>
+</div>
+<!-- Fin de la liste de IG en cours -->
+
+<?= $this->paginationControl($this->paginator, 'Sliding', 'partial/paginator/dashboard'); ?>
+
+
+<?php
+/**
+ * Fin de la liste des IG en cours
+ */
+// *****************************************Partie dashboard moyenne de Gtr tickets du mois*******************************************//
+
+$dateActuel = date("Y-m-d H:i:s");
+$dateFirstDay = date("Y-m-01 H:i:s", strtotime("-0 month", strtotime(date("Y-m-d"))));
+$dateFDay = date("Y-m-01 H:i:s", strtotime("-0 month", strtotime(date("Y-m-d"))));
+
+// / Calcul du nombre total de tickets par catégorie
+$numTicketsPlatinium = $igDashboard->getNumCategorie('Platinium', $dateFDay, $dateActuel);
+$numTicketsOr = $igDashboard->getNumCategorie('Or', $dateFDay, $dateActuel);
+$numTicketsArgent = $igDashboard->getNumCategorie('Argent', $dateFDay, $dateActuel);
+$numTicketsBestEffort = $igDashboard->getNumCategorie('Best Effort', $dateFDay, $dateActuel);
+$numTicketsTotal = $numTicketsPlatinium + $numTicketsOr + $numTicketsArgent + $numTicketsBestEffort;
+// /Fin calcul nombre total de tickets
+// /Assigner les valeurs de gtr par catégories
+$gtrP = 2;
+$gtrO = 4;
+$gtrA = 8;
+$gtrBF = 24;
+
+// /Calcul du nombre de tickets ok par catégorie
+$OkPlatinium = $igDashboard->getNumGTRok('Platinium', $gtrP, $dateFDay, $dateActuel);
+$OkOr = $igDashboard->getNumGTRok('Or', $gtrO, $dateFDay, $dateActuel);
+$OkArgent = $igDashboard->getNumGTRok('Argent', $gtrA, $dateFDay, $dateActuel);
+$OkBestEffort = $igDashboard->getNumGTRok('Best Effort', $gtrBF, $dateFDay, $dateActuel);
+$OkTotal = $OkPlatinium + $OkOr + $OkArgent + $OkBestEffort;
+// / Calcul du nombre de tickets nok par catégorie
+$NokPlatinium = $igDashboard->getNumGTRnok('Platinium', $gtrP, $dateFDay, $dateActuel);
+$NokOr = $igDashboard->getNumGTRnok('Or', $gtrO, $dateFDay, $dateActuel);
+$NokArgent = $igDashboard->getNumGTRnok('Argent', $gtrA, $dateFDay, $dateActuel);
+$NokBestEffort = $igDashboard->getNumGTRnok('Best Effort', $gtrBF, $dateFDay, $dateActuel);
+$NokTotal = $NokPlatinium + $NokOr + $NokArgent + $NokBestEffort;
+// /
+// / Calcul de la moyenne gtr par catégorie, le résultat est -integer-
+$xPlatinium = $igDashboard->getMoyenneGTR('Platinium', $gtrP, $dateFDay, $dateActuel);
+$xOr = $igDashboard->getMoyenneGTR('Or', $gtrO, $dateFDay, $dateActuel);
+$xArgent = $igDashboard->getMoyenneGTR('Argent', $gtrA, $dateFDay, $dateActuel);
+$xBestEffort = $igDashboard->getMoyenneGTR('Best Effort', $gtrBF, $dateFDay, $dateActuel);
+// / Calcul de la moyenne gtr par catégorie, el résultat est en format date
+$moyenneP = $igDashboard->getMoyenneGTRDate('Platinium', $dateFDay, $dateActuel);
+$moyenneO = $igDashboard->getMoyenneGTRDate('Or', $dateFDay, $dateActuel);
+$moyenneA = $igDashboard->getMoyenneGTRDate('Argent', $dateFDay, $dateActuel);
+$moyenneBF = $igDashboard->getMoyenneGTRDate('Best Effort', $dateFDay, $dateActuel);
+// / Calcul du % de tickets OK
+$pourcentageOkP = $igDashboard->makePercent($OkPlatinium, $numTicketsPlatinium);
+$pourcentageOkO = $igDashboard->makePercent($OkOr, $numTicketsOr);
+$pourcentageOkA = $igDashboard->makePercent($OkArgent, $numTicketsArgent);
+$pourcentageOkBF = $igDashboard->makePercent($OkBestEffort, $numTicketsBestEffort);
+// //Fin calcul %
+echo "<br><br>
+			
+<table width='700' class='dashGTR' cellpadding='3' cellspacing='1'>
+    <tr><td colspan='7' style='text-align:center'><font size='3'><b>PERIODE:   </b>  $dateFDay <b>-----</b> $dateActuel</td></font></tr>
+    <tr><td colspan='7'></td></tr>
+    <tr><td colspan='7'></td></tr>
+    <tr>
+        <td></td>
+        <td class='title'>Moyenne Mensuelle</td>
+        <td class='title'>Categorie</td>
+        <td class='title'>Gtr</td>
+        <td class='title'>% Tickets OK</td>
+        <td class='title'>Tickets OK</td>
+        <td class='title'>Tickets NOK</td>
+    </tr>
+    <tr>
+        <td class='feu'>" . $igDashboard->getBall($pourcentageOkP) . "</td>
+        <td class='feu'>$moyenneP</td>
+        <td class='feu'>Platinium</td>
+        <td class='feu'>$gtrP hrs</td>
+        <td class='feu'>$pourcentageOkP %</td>
+        <td class='feu'>$OkPlatinium</td>
+        <td class='feu'>$NokPlatinium</td>
+    </tr>
+    <tr>
+        <td class='feu'>" . $igDashboard->getBall($pourcentageOkO) . "</td>
+        <td class='feu'>$moyenneO</td>
+        <td class='feu'>Or</td>
+        <td class='feu'>$gtrO hrs</td>
+        <td class='feu'>$pourcentageOkO %</td>
+        <td class='feu'>$OkOr</td>
+        <td class='feu'>$NokOr</td>
+    </tr>
+    <tr>
+        <td class='feu'>" . $igDashboard->getBall($pourcentageOkA) . "</td>
+        <td class='feu'>$moyenneA</td>
+        <td class='feu'>Argent</td>
+        <td class='feu'>$gtrA hrs</td>
+        <td class='feu'>$pourcentageOkA %</td>
+        <td class='feu'>$OkArgent</td>
+        <td class='feu'>$NokArgent</td>
+    </tr>
+    <tr>
+        <td class='feu'>" . $igDashboard->getBall($pourcentageOkBF) . "</td>
+        <td class='feu'>$moyenneBF</td>
+        <td class='feu'>Best Effort</td>
+        <td class='feu'>$gtrBF hrs</td>
+        <td class='feu'>$pourcentageOkBF %</td>
+        <td class='feu'>$OkBestEffort</td>
+        <td class='feu'>$NokBestEffort</td>
+    </tr>
+    <tr>
+        <td colspan='4'></td>
+        <td></td>
+        <td class='feu'>$OkTotal</td>
+        <td class='feu'>$NokTotal</td>
+    </tr>
+    <tr><td colspan='7'></td></tr>
+    <tr><td colspan='7'></td></tr>
+</table>
+
+<br />";
+?>

@@ -1,0 +1,25 @@
+
+<h3>Ajouter une catégorie</h3>
+<br>
+
+<?php
+$elements = [
+    'id_typo',
+    'typo_categorie',
+    'id'
+];
+foreach ($elements as $element)
+    $form->get($element)->setAttributes([
+        'class' => 'form-control'
+    ]);
+?>
+
+
+<form
+	action="<?php echo $this->url('admin', ['action' => 'insertcategorie']); ?>"
+	method="post">
+    <?php
+    $this->formDecorator($this, $elements, 'submit');
+    ?>
+</form>
+

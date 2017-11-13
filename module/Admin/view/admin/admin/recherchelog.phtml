@@ -1,0 +1,85 @@
+
+	<h3>Recherche des <?php echo $this->limit ?> derniers logs applicatifs</h3><br>
+	<div class="subcontent" id="loaddiv" >
+		<table>
+   			<tr>
+   				<td>
+   				<input type='checkbox' name='delai_javascript' id='delai_javascript' onclick="afficherModule(this,'afficher_filtre')"> <span style="color:#999999;font-style:italic">Filtre</span>
+   				</td>
+   			</tr>
+   		</table>
+		
+		<!-- ********* FILTRE CACHBE ********* -->
+		<!-- <div id="myFilter" style="display: none;"> -->
+		<span class="afficher_filtre" id="afficher_filtre" style="display:none;">
+			<form method='POST' action=''>
+				<table style="width:auto">
+					<tr>
+						<td>Insertion dans la base de données</td>
+						<td><input type='checkbox' name='insertion_bdd' id='insertion_bdd' value='1' <?php if ($this->insertion_bdd == 1) echo "checked='checked'"; ?>></td>
+					</tr>
+					<tr>
+						<td>Nombre de valeur affiché</td>
+						<td>
+							<select name="limit" id="limit">
+							    <option value="10" <?php if ($this->limit == 10) echo "selected='selected'"; ?>>- 10 -</option>
+							    <option value="20" <?php if ($this->limit == 20) echo "selected='selected'"; ?>>- 20 -</option>
+							    <option value="50" <?php if ($this->limit == 50) echo "selected='selected'"; ?>>- 50 -</option>
+							    <option value="100" <?php if ($this->limit == 100) echo "selected='selected'"; ?>>- 100 -</option>
+							    <option value="200" <?php if ($this->limit == 200) echo "selected='selected'"; ?>>- 200 -</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td><input type="submit" class="bouton" value="Enregistrer"></td>
+					</tr>
+				</table>
+			</form>
+		</span>
+		
+		<?php 
+		if(sizeof($this->dashboard) == 0)
+		{
+		?>
+			<br><br>
+				<table border='1' width='70%' bordercolor='#66CD00' cellpadding='1' cellspacing='0'>
+					<tr>
+						<td colspan='4' width='auto'><b>PAS DE LOGS APPLICATIFS</b></td>
+					</tr>
+				</table>
+			<br><br><br>
+			
+		<?php
+			
+		}
+		else
+		{		
+			echo "<table class='recap' border='1' width='98%' bordercolor='gray' cellpadding='0' cellspacing='0'>";
+			echo "<tr style='background-color:white'>";
+				echo "<th><b style='color:white;'>ID.log</b></th>";
+				echo "<th><b style='color:white;'>Utilisateur</b></th>";
+				echo "<th><b style='color:white;'>IP</b></th>";
+				echo "<th><b style='color:white;'>Date log</b></th>";
+				echo "<th><b style='color:white;'>Controller</b></th>";
+				echo "<th><b style='color:white;'>Action</b></th>";
+				echo "<th><b style='color:white;'>Type action</b></th>";
+				echo "<th><b style='color:white;'>Description</b></th>";
+			echo "</tr>";
+				
+			foreach($this->dashboard as $dashboard)
+			{
+				echo "<tr>";
+					echo "<td>".$dashboard['id_log']."</td>";
+					echo "<td>".$dashboard['login']."</td>";
+					echo "<td>".$dashboard['ip_user']."</td>";
+					echo "<td>".$dashboard['date_log']."</td>";
+					echo "<td>".$dashboard['nom_controller']."</td>";
+					echo "<td>".$dashboard['nom_action']."</td>";
+					echo "<td>".$dashboard['nom_type_action']."</td>";
+					echo "<td>".$dashboard['description']."</td>";
+				echo "</tr>";
+			}
+		}
+		echo "</table><br>";
+		?>
+	
