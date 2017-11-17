@@ -1,0 +1,158 @@
+{
+	"name" : "igtool/esms",
+	"description" : "Zend Framework 3 Application",
+	"type" : "project",
+	"license" : "BSD-3-Clause",
+	"keywords" : [
+		"framework",
+		"mvc",
+		"zf"
+	],
+	"homepage" : "http://framework.zend.com/",
+	"minimum-stability" : "dev",
+	"prefer-stable" : true,
+	"require" : {
+		"php" : "^5.6 || ^7.0",
+		"zendframework/zend-component-installer" : "^1.0 || ^0.7 || ^1.0.0-dev@dev",
+		"zendframework/zend-mvc" : "^3.0.1",
+		"zfcampus/zf-development-mode" : "^3.0",
+		"zendframework/zend-db" : "^2.8.1",
+		"zendframework/zend-mvc-form" : "^1.0",
+		"zendframework/zend-session" : "^2.7",
+		"zendframework/zend-authentication" : "^2.5",
+		"zendframework/zend-crypt" : "^3.2",
+		"zendframework/zend-ldap" : "^2.8",
+		"zendframework/zend-hydrator" : "^2.2",
+		"zendframework/zend-stdlib" : "^3.0",
+		"zendframework/zend-cache" : "^2.7",
+		"zendframework/zend-permissions-rbac" : "^2.5",
+		"zendframework/zend-serializer" : "^2.8",
+		"zendframework/zend-captcha" : "^2.7",
+		"zendframework/zend-i18n-resources" : "^2.5",
+		"zendframework/zend-text" : "^2.6",
+		"zendframework/zendservice-recaptcha" : "^3.0",
+		"zendframework/zend-mvc-plugins" : "^1.0",
+		"zendframework/zend-mvc-plugin-flashmessenger" : "^1.0",
+		"zendframework/zend-mvc-plugin-prg" : "^1.0",
+		"zendframework/zend-paginator" : "^2.7",
+		"zendframework/zend-math" : "^3.0",
+		"doctrine/doctrine-orm-module" : "^1.1",
+		"tasmaniski/zend-layout-change" : "^1.0",
+		"zendframework/zend-mail" : "^2.8",
+		"zendframework/zend-navigation" : "^2.8",
+		"zendframework/zend-permissions-acl" : "^2.6",
+		"zendframework/zend-console" : "^2.6",
+		"phpoffice/phpexcel" : "dev-master",
+		"bitweb/zf3-cron-module" : "1.0.*",
+		"zendframework/zend-test": "^3.1",
+		"phpmailer/phpmailer": "^5.2"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Application\\" : "module/Application/src/",
+			"Classes\\" : "module/Classes/src/",
+			"User\\" : "module/User/src/",
+			"Admin\\" : "module/Admin/src/",
+			"Calcul\\" : "module/Calcul/src/",
+			"Requeter\\" : "module/Requeter/src/",
+			"Documentation\\" : "module/Documentation/src/",
+			"Esms\\" : "module/Esms/src/",
+			"Cron\\" : "module/Cron/src/",
+			"Aui\\" : "module/Aui/src/",
+			"Api\\" : "module/Api/src/"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"ApplicationTest\\" : "module/Application/test/"
+		}
+	},
+	"scripts" : {
+		"cs-check" : "phpcs",
+		"cs-fix" : "phpcbf",
+		"development-disable" : "zf-development-mode disable",
+		"development-enable" : "zf-development-mode enable",
+		"development-status" : "zf-development-mode status",
+		"post-create-project-cmd" : "@development-enable",
+		"serve" : "php -S 0.0.0.0:8383 -t public public/index.php",
+		"test" : "phpunit",
+		"cron-igsi" : [
+		    "php public/index.php extract hebdo_esms_ec",
+                    "php public/index.php extract esms_encours",
+                    "php public/index.php extract hebdo_esms",
+                    "php public/index.php extract hebdo_ig_ec",
+                    "php public/index.php extract hebdo_ig",
+                    "php public/index.php extract sixmonths",
+                    "php public/index.php scriptdashboard ig_hebdo",
+                    "php public/index.php scriptdashboard ig_mensuel",
+                    "php public/index.php scriptdashboard esms_ig_hebdo",
+                    "php public/index.php scriptdashboard esms_ig_mensuel",
+                    "php public/index.php esms_purge_histo_tables",
+                    "php public/index.php extract ig_to_promes",
+                    "php public/index.php prod_insert_fich_igsi_esms_app",
+                    "php public/index.php prod_insert_fich_esms",
+                    "php public/index.php prod_split_IG_esms"
+		],
+		"cron-igsi-local" : [
+		    "set APPLICATION_ENV=local&&php public/index.php extract hebdo_esms_ec",
+                    "set APPLICATION_ENV=local&&php public/index.php extract esms_encours",
+                    "set APPLICATION_ENV=local&&php public/index.php extract hebdo_esms",
+                    "set APPLICATION_ENV=local&&php public/index.php extract hebdo_ig_ec",
+                    "set APPLICATION_ENV=local&&php public/index.php extract hebdo_ig",
+                    "set APPLICATION_ENV=local&&php public/index.php extract sixmonths",
+                    "set APPLICATION_ENV=local&&php public/index.php scriptdashboard ig_hebdo",
+                    "set APPLICATION_ENV=local&&php public/index.php scriptdashboard ig_mensuel",
+                    "set APPLICATION_ENV=local&&php public/index.php scriptdashboard esms_ig_hebdo",
+                    "set APPLICATION_ENV=local&&php public/index.php scriptdashboard esms_ig_mensuel",
+                    "set APPLICATION_ENV=local&&php public/index.php esms_purge_histo_tables",
+                    "set APPLICATION_ENV=local&&php public/index.php extract ig_to_promes",
+                    "set APPLICATION_ENV=local&&php public/index.php prod_insert_fich_igsi_esms_app",
+                    "set APPLICATION_ENV=local&&php public/index.php prod_insert_fich_esms",
+                    "set APPLICATION_ENV=local&&php public/index.php prod_split_IG_esms"
+		],
+		"cron-igsi-pack" : [
+		    "set APPLICATION_ENV=pack&&php public/index.php extract hebdo_esms_ec",
+                    "set APPLICATION_ENV=pack&&php public/index.php extract esms_encours",
+                    "set APPLICATION_ENV=pack&&php public/index.php extract hebdo_esms",
+                    "set APPLICATION_ENV=pack&&php public/index.php extract hebdo_ig_ec",
+                    "set APPLICATION_ENV=pack&&php public/index.php extract hebdo_ig",
+                    "set APPLICATION_ENV=pack&&php public/index.php extract sixmonths",
+                    "set APPLICATION_ENV=pack&&php public/index.php scriptdashboard ig_hebdo",
+                    "set APPLICATION_ENV=pack&&php public/index.php scriptdashboard ig_mensuel",
+                    "set APPLICATION_ENV=pack&&php public/index.php scriptdashboard esms_ig_hebdo",
+                    "set APPLICATION_ENV=pack&&php public/index.php scriptdashboard esms_ig_mensuel",
+                    "set APPLICATION_ENV=pack&&php public/index.php esms_purge_histo_tables",
+                    "set APPLICATION_ENV=pack&&php public/index.php extract ig_to_promes",
+                    "set APPLICATION_ENV=pack&&php public/index.php prod_insert_fich_igsi_esms_app",
+                    "set APPLICATION_ENV=pack&&php public/index.php prod_insert_fich_esms",
+                    "set APPLICATION_ENV=pack&&php public/index.php prod_split_IG_esms"
+
+		],
+		"cron-igsi-pre-pack" : [
+		    "set APPLICATION_ENV=pre-pack&&php public/index.php extract hebdo_esms_ec",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php extract esms_encours",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php extract hebdo_esms",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php extract hebdo_ig_ec",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php extract hebdo_ig",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php extract sixmonths",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php scriptdashboard ig_hebdo",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php scriptdashboard ig_mensuel",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php scriptdashboard esms_ig_hebdo",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php scriptdashboard esms_ig_mensuel",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php esms_purge_histo_tables",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php extract ig_to_promes",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php prod_insert_fich_igsi_esms_app",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php prod_insert_fich_esms",
+                    "set APPLICATION_ENV=pre-pack&&php public/index.php prod_split_IG_esms"
+
+		]
+	},
+	"require-dev" : {
+		"zendframework/zend-developer-tools" : "^1.1.0"
+	},
+	"authors" : [{
+			"name" : "BIDJEKE jean eric",
+			"email" : "jbidjeke@yahoo.fr"
+		}
+	]
+}
